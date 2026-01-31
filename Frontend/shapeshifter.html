@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Shape Shifter — Play Hive</title>
+<style>
+:root{
+  --bg:#fff5f5;
+  --panel:#ffecec;
+  --accent:#ff6b6b;
+  --accent-2:#ff9f80;
+  --muted:#7a7a7a;
+  --danger:#d90429;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Roboto;
+  background:linear-gradient(180deg,var(--bg),#fff0f0 70%);
+  color:#222;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+}
+nav{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 18px;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(8px);
+  box-shadow:0 2px 6px rgba(255,150,150,0.15);
+}
+.logo{
+  font-weight:800;
+  color:white;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  padding:8px 12px;
+  border-radius:8px;
+}
+.nav-links{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-weight:600;
+}
+.nav-links a.active{color:var(--accent);}
+.wrap{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:30px;
+  width:100%;
+  max-width:1200px;
+  padding:30px 10px;
+}
+.panel{
+  background:rgba(255,255,255,0.9);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 4px 20px rgba(255,150,150,0.25);
+}
+.game-area {
+  flex: 1;
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+}
+.sidebar{
+  width:300px;
+}
+.board {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+.cell{
+  width:64px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  border-radius:8px;
+  transition:transform .15s;
+  background: white;
+  box-shadow: 0 0 6px rgba(255,150,150,0.2);
+  overflow: hidden;
+}
+.cell:active{transform:scale(.95);}
+.pulse{animation:pulse .8s ease;}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.stat{background:#fff;padding:8px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(255,100,100,0.25);}
+button{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:600;}
+.btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;}
+.small{font-size:12px;color:var(--muted);}
+.leaderboard-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.leaderboard-table th,.leaderboard-table td{padding:6px;border-bottom:1px solid #eee;text-align:left;}
+.leaderboard-table th{color:var(--accent);}
+</style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Play Hive</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="shapeshifterrulebook.html">How It Works</a>
+     
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="panel game-area">
+      <h2>🔷 Shape Shifter</h2>
+      <p class="small">Find the odd shape before time runs out! Score accumulates until you lose.</p>
+      <div id="board" class="board"></div>
+      <div class="stats">
+        <div>Level: <span id="levelBadge">1</span></div>
+        <div>Time: <span id="timeBadge">10s</span></div>
+        <div>Score: <span id="scoreBadge">0</span></div>
+        <div>Streak: <span id="streakBadge">0</span></div>
+      </div>
+      <div style="margin-top:12px;">
+        <button id="startBtn" class="btn-primary">Start Game</button>
+        <button id="restartBtn">Restart</button>
+        <button id="toggleSound">Sound: ON</button>
+      </div>
+    </div>
+
+    <aside class="panel sidebar">
+      <h3>Leaderboard</h3>
+      <table class="leaderboard-table" id="leaderboardTable">
+        <thead><tr><th>#</th><th>User</th><th>Score</th><th>Last Played</th></tr></thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </aside>
+  </div>
+
+<script>
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+let state={user:null,level:1,score:0,streak:0,timeLeft:10,running:false,sound:true,lost:false};
+
+function loadLeaderboard(){return JSON.parse(localStorage.getItem('shapeLeaderboard')||'[]');}
+function saveLeaderboard(lb){localStorage.setItem('shapeLeaderboard',JSON.stringify(lb));}
+
+function updateLeaderboardDisplay(){
+  const body=document.getElementById('leaderboardBody');
+  const lb=loadLeaderboard();body.innerHTML='';
+  if(lb.length===0){body.innerHTML='<tr><td colspan="4" class="small">No scores yet</td></tr>';return;}
+  lb.forEach((e,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td>${e.user}</td><td>${e.score}</td><td>${new Date(e.time).toLocaleString()}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+function addFinalScore(){
+  const lb=loadLeaderboard();
+  lb.push({user:state.user,score:state.score,time:Date.now()});
+  lb.sort((a,b)=>b.score-a.score);
+  if(lb.length>5)lb.length=5;
+  saveLeaderboard(lb);
+  updateLeaderboardDisplay();
+}
+
+let audioCtx=null;
+function ensureAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
+function playTone(f,d=0.08,v=0.06){
+  if(!state.sound)return;
+  ensureAudio();
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type='sine';o.frequency.value=f;g.gain.value=v;
+  o.connect(g);g.connect(audioCtx.destination);
+  o.start();
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+d);
+  o.stop(audioCtx.currentTime+d+0.02);
+}
+
+let timer=null;
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    state.timeLeft-=0.1;
+    if(state.timeLeft<=0){
+      state.timeLeft=0;
+      loseGame();
+    }
+    updateUI();
+  },100);
+}
+function stopTimer(){clearInterval(timer);}
+
+const SHAPES=['circle','square','triangle','star','hexagon','diamond','pentagon'];
+
+function LEVEL_CONFIG(lvl){
+  return{grid:clamp(2+Math.floor(lvl/2),2,7),time:clamp(10-Math.floor(lvl/3),4,12)};
+}
+
+function createShapeSVG(shape,size=60,color='#6be4b4',rotation=0){
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('width',size);
+  s.setAttribute('height',size);
+  s.setAttribute('viewBox','0 0 100 100');
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('transform',`rotate(${rotation},50,50)`);
+  s.appendChild(g);
+  const fill=color;
+  const shapes={
+    circle:`<circle cx="50" cy="50" r="36" fill="${fill}" />`,
+    square:`<rect x="14" y="14" width="72" height="72" rx="10" fill="${fill}" />`,
+    triangle:`<polygon points="50,12 88,82 12,82" fill="${fill}" />`,
+    star:`<path d="M50 12 L61 38 L88 38 L66 55 L75 82 L50 65 L25 82 L34 55 L12 38 L39 38 Z" fill="${fill}" />`,
+    hexagon:`<polygon points="30,12 70,12 88,50 70,88 30,88 12,50" fill="${fill}" />`,
+    diamond:`<polygon points="50,8 88,50 50,92 12,50" fill="${fill}" />`,
+    pentagon:`<polygon points="50,10 85,38 70,80 30,80 15,38" fill="${fill}" />`
+  };
+  g.innerHTML=shapes[shape]||shapes.circle;
+  return s;
+}
+
+function initLevel(){
+  const cfg=LEVEL_CONFIG(state.level);
+  state.timeLeft=cfg.time;
+  state.running=true;
+  updateUI();
+  renderBoard(cfg);
+  startTimer();
+}
+
+function renderBoard(cfg){
+  const board=document.getElementById('board');
+  const n=cfg.grid;
+  board.style.gridTemplateColumns=`repeat(${n},64px)`;
+  board.innerHTML='';
+  const baseShape=pick(SHAPES);
+  const baseColor=pick(['#6be4b4','#3af7e0','#8be3ff','#ffd166','#ff8fab','#c792ff']);
+  const oddIndex=rand(0,n*n-1);
+  for(let i=0;i<n*n;i++){
+    const cell=document.createElement('div');
+    cell.className='cell';
+    let shape=baseShape,color=baseColor;
+    if(i===oddIndex){
+      if(Math.random()<0.5)shape=pick(SHAPES.filter(s=>s!==baseShape));
+      else color=pick(['#ff8fab','#ffb86b','#8be3ff','#6be4b4'].filter(c=>c!==baseColor));
+    }
+    const svg=createShapeSVG(shape,60,color,rand(0,40));
+    cell.appendChild(svg);
+    cell.onclick=()=>onCellClick(i===oddIndex,cell);
+    board.appendChild(cell);
+  }
+}
+
+function onCellClick(correct,cell){
+  if(!state.running)return;
+  if(correct){
+    cell.classList.add('pulse');
+    const timeBonus=Math.round(state.timeLeft*2);
+    const streakBonus=state.streak*3;
+    state.score+=10+timeBonus+streakBonus;
+    state.streak++;
+    playTone(880,0.08);
+    stopTimer();
+    state.level++;
+    initLevel();
+  }else{
+    playTone(200,0.1);
+    state.score=Math.max(0,state.score-5);
+    state.streak=0;
+    updateUI();
+  }
+}
+
+function loseGame(){
+  stopTimer();
+  state.running=false;
+  state.lost=true;
+  playTone(150,0.2);
+  alert(`⏰ Time's up!\n\nFinal Score: ${state.score}\n\nGreat job, ${state.user}!`);
+  addFinalScore();
+}
+
+function updateUI(){
+  document.getElementById('levelBadge').textContent=state.level;
+  document.getElementById('timeBadge').textContent=`${Math.ceil(state.timeLeft)}s`;
+  document.getElementById('scoreBadge').textContent=state.score;
+  document.getElementById('streakBadge').textContent=state.streak;
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  if(!state.user){state.user=prompt("Enter your name:")||"Player";}
+  if(state.lost){state.score=0;state.level=1;state.streak=0;state.lost=false;}
+  initLevel();
+};
+document.getElementById('restartBtn').onclick=()=>{
+  stopTimer();
+  state={...state,level:1,score:0,streak:0,lost:false};
+  initLevel();
+};
+document.getElementById('toggleSound').onclick=()=>{
+  state.sound=!state.sound;
+  document.getElementById('toggleSound').textContent=state.sound?'Sound: ON':'Sound: OFF';
+};
+
+updateLeaderboardDisplay();
+</script>
+</body>
+</html>

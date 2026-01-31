@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Leaderboard — Play Hive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+    }
+    
+    .leaderboard-item {
+      transition: all 0.3s ease;
+      border-radius: 12px;
+    }
+    
+    .leaderboard-item:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .rank-1 { background: linear-gradient(135deg, #ffd700, #ffed4e); }
+    .rank-2 { background: linear-gradient(135deg, #c0c0c0, #e5e7eb); }
+    .rank-3 { background: linear-gradient(135deg, #cd7f32, #e6b17e); }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Navigation -->
+  <nav class="glass-card mx-6 mt-4 p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="text-2xl font-bold">🏆 Play Hive Leaderboard</div>
+      <div class="flex gap-6">
+        <a href="index.html" class="hover:text-yellow-200 transition">Home</a>
+        <a href="games.html" class="hover:text-yellow-200 transition">Games</a>
+        <a href="leaderboard.html" class="text-yellow-200 font-semibold">Leaderboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold mb-4">Global Leaderboard</h1>
+      <p class="text-xl opacity-90">See who's dominating the gaming arena!</p>
+    </div>
+
+    <!-- Game Selection -->
+    <div class="glass-card p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Select Game</h2>
+      <div class="flex flex-wrap gap-4" id="gameFilters">
+        <button class="px-6 py-3 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 transition active-game" data-game="all">All Games</button>
+        <button class="px-6 py-3 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition" data-game="emoji">Emoji Decoder</button>
+        <button class="px-6 py-3 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition" data-game="shape">Shape Shifter</button>
+        <button class="px-6 py-3 rounded-lg bg-white bg-opacity-10 hover:bg-opacity-20 transition" data-game="mind">Mind Loop</button>
+      </div>
+    </div>
+
+    <!-- Leaderboard Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Top 3 Players -->
+      <div class="glass-card p-8">
+        <h2 class="text-3xl font-bold text-center mb-8">🎯 Top Performers</h2>
+        <div id="topPlayers" class="space-y-6">
+          <!-- Top players will be loaded here -->
+          <div class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p class="mt-4">Loading top players...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Leaderboard -->
+      <div class="glass-card p-8">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-3xl font-bold">🏅 Global Rankings</h2>
+          <button id="refreshBtn" class="px-4 py-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition">
+            🔄 Refresh
+          </button>
+        </div>
+        <div id="fullLeaderboard" class="space-y-4 max-h-96 overflow-y-auto">
+          <!-- Leaderboard will be loaded here -->
+          <div class="text-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+            <p class="mt-4">Loading leaderboard...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Specific Leaderboards -->
+    <div class="mt-12">
+      <h2 class="text-3xl font-bold text-center mb-8">🎮 Game Leaderboards</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Emoji Decoder -->
+        <div class="glass-card p-6">
+          <h3 class="text-xl font-semibold mb-4 text-center">😊 Emoji Decoder</h3>
+          <div id="emojiLeaderboard" class="space-y-3 text-sm">
+            <div class="text-center py-4">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shape Shifter -->
+        <div class="glass-card p-6">
+          <h3 class="text-xl font-semibold mb-4 text-center">🔷 Shape Shifter</h3>
+          <div id="shapeLeaderboard" class="space-y-3 text-sm">
+            <div class="text-center py-4">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mind Loop -->
+        <div class="glass-card p-6">
+          <h3 class="text-xl font-semibold mb-4 text-center">🧠 Mind Loop</h3>
+          <div id="mindLeaderboard" class="space-y-3 text-sm">
+            <div class="text-center py-4">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Syntax Sprint -->
+        <div class="glass-card p-6">
+          <h3 class="text-xl font-semibold mb-4 text-center">💻 Syntax Sprint</h3>
+          <div id="syntaxLeaderboard" class="space-y-3 text-sm">
+            <div class="text-center py-4">
+              <p>Coming Soon</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // API endpoints
+    const API_BASE = 'http://localhost:8088';
+    
+    // DOM elements
+    const topPlayersEl = document.getElementById('topPlayers');
+    const fullLeaderboardEl = document.getElementById('fullLeaderboard');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const gameFilters = document.getElementById('gameFilters');
+    
+    // Game specific leaderboards
+    const emojiLeaderboardEl = document.getElementById('emojiLeaderboard');
+    const shapeLeaderboardEl = document.getElementById('shapeLeaderboard');
+    const mindLeaderboardEl = document.getElementById('mindLeaderboard');
+
+    // ✅ FIXED: Enhanced fetch with session handling
+    async function fetchWithSession(url, options = {}) {
+      const defaultOptions = {
+        credentials: 'include', // 🔑 CRITICAL: Include session cookies
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        }
+      };
+
+      try {
+        const response = await fetch(url, { ...defaultOptions, ...options });
+        
+        // Handle session expiry
+        if (response.status === 401) {
+          console.log('🔐 Session expired during fetch');
+          handleSessionExpiry();
+          throw new Error('Session expired');
+        }
+        
+        return response;
+      } catch (error) {
+        console.error('❌ Fetch error:', error);
+        throw error;
+      }
+    }
+
+    // ✅ NEW: Handle session expiry
+    function handleSessionExpiry() {
+      // Clear localStorage
+      localStorage.removeItem('userData');
+      localStorage.removeItem('lastLogin');
+      
+      // Show message and redirect
+      showError('Session expired. Redirecting to login...');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+    }
+
+    // ✅ NEW: Check if user is logged in
+    function checkUserLoggedIn() {
+      const userData = localStorage.getItem('userData');
+      if (!userData) {
+        console.log('⚠️ User not logged in, but continuing with public leaderboard');
+        return false;
+      }
+      return true;
+    }
+
+    // Load all leaderboards
+    async function loadAllLeaderboards() {
+      // Check session first
+      if (!checkUserLoggedIn()) {
+        console.log('👤 Loading public leaderboard (no session)');
+      }
+
+      try {
+        await Promise.all([
+          loadTopPlayers(),
+          loadFullLeaderboard(),
+          loadGameLeaderboards()
+        ]);
+      } catch (error) {
+        console.error('Error loading leaderboards:', error);
+        if (error.message !== 'Session expired') {
+          showError('Failed to load leaderboards');
+        }
+      }
+    }
+
+    // Load top 3 players
+    async function loadTopPlayers() {
+      try {
+        // Try to get users first
+        const response = await fetchWithSession(`${API_BASE}/api/users/leaderboard`);
+        
+        if (response.ok) {
+          const users = await response.json();
+          
+          if (users && users.length > 0) {
+            topPlayersEl.innerHTML = users.slice(0, 3).map((user, index) => {
+              const rankClass = `rank-${index + 1}`;
+              const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+              
+              return `
+                <div class="leaderboard-item p-4 ${rankClass} rounded-xl shadow-lg">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                      <div class="text-2xl font-bold">${rankIcon}</div>
+                      <div>
+                        <div class="font-semibold text-lg">${user.username}</div>
+                        <div class="text-sm opacity-90">Level ${user.level || 1}</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-bold text-xl">${user.totalScore || user.score || 0}</div>
+                      <div class="text-sm">Total Score</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+            return;
+          }
+        }
+        
+        // Fallback: Load from emoji scores
+        await loadTopPlayersFromScores();
+        
+      } catch (error) {
+        console.error('Error loading top players:', error);
+        if (error.message !== 'Session expired') {
+          topPlayersEl.innerHTML = '<div class="text-center text-red-300">Failed to load top players</div>';
+        }
+      }
+    }
+
+    // Fallback: Load top players from emoji scores
+    async function loadTopPlayersFromScores() {
+      try {
+        const response = await fetchWithSession(`${API_BASE}/api/emoji/leaderboard`);
+        
+        if (response.ok) {
+          const scores = await response.json();
+          
+          if (scores && scores.length > 0) {
+            topPlayersEl.innerHTML = scores.slice(0, 3).map((score, index) => {
+              const rankClass = `rank-${index + 1}`;
+              const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+              const username = score.user ? score.user.username : (score.username || 'Unknown');
+              
+              return `
+                <div class="leaderboard-item p-4 ${rankClass} rounded-xl shadow-lg">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                      <div class="text-2xl font-bold">${rankIcon}</div>
+                      <div>
+                        <div class="font-semibold text-lg">${username}</div>
+                        <div class="text-sm opacity-90">Emoji Decoder</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-bold text-xl">${score.score || 0}</div>
+                      <div class="text-sm">Score</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            showNoScoresMessage(topPlayersEl);
+          }
+        } else {
+          showNoScoresMessage(topPlayersEl);
+        }
+      } catch (error) {
+        console.error('Error loading scores:', error);
+        if (error.message !== 'Session expired') {
+          topPlayersEl.innerHTML = '<div class="text-center text-red-300">Failed to load top players</div>';
+        }
+      }
+    }
+
+    // Load full leaderboard
+    async function loadFullLeaderboard() {
+      try {
+        const response = await fetchWithSession(`${API_BASE}/api/emoji/leaderboard`);
+        
+        if (response.ok) {
+          const scores = await response.json();
+          
+          if (!scores || scores.length === 0) {
+            showNoScoresMessage(fullLeaderboardEl);
+            return;
+          }
+          
+          // Show top 10 scores
+          fullLeaderboardEl.innerHTML = scores.slice(0, 10).map((score, index) => {
+            const username = score.user ? score.user.username : (score.username || 'Unknown');
+            const scoreValue = score.score || 0;
+            const playedAt = score.playedAt ? new Date(score.playedAt) : new Date();
+            const rankClass = index < 3 ? `rank-${index + 1}` : '';
+            
+            return `
+              <div class="leaderboard-item p-4 rounded-lg ${rankClass}">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div class="w-8 text-center font-bold">${index + 1}</div>
+                    <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center font-semibold">
+                      ${username.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div class="font-semibold">${username}</div>
+                      <div class="text-sm opacity-75">${playedAt.toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-bold text-lg">${scoreValue}</div>
+                    <div class="text-sm opacity-75">Score</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          showNoScoresMessage(fullLeaderboardEl);
+        }
+        
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        if (error.message !== 'Session expired') {
+          fullLeaderboardEl.innerHTML = `
+            <div class="text-center text-red-300 py-8">
+              Failed to load leaderboard
+            </div>`;
+        }
+      }
+    }
+
+    // Load game-specific leaderboards
+    async function loadGameLeaderboards() {
+      try {
+        // Emoji Decoder
+        const emojiResponse = await fetchWithSession(`${API_BASE}/api/emoji/leaderboard`);
+        if (emojiResponse.ok) {
+          const emojiData = await emojiResponse.json();
+          emojiLeaderboardEl.innerHTML = emojiData.slice(0, 5).map((score, index) => {
+            const username = score.user ? score.user.username : (score.username || 'Unknown');
+            return `
+              <div class="flex justify-between items-center p-2 rounded bg-white bg-opacity-10">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold">${index + 1}.</span>
+                  <span class="truncate max-w-[100px]">${username}</span>
+                </div>
+                <span class="font-semibold">${score.score || 0}</span>
+              </div>
+            `;
+          }).join('') || '<div class="text-center opacity-75 py-4">No scores yet</div>';
+        } else {
+          emojiLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">No scores yet</div>';
+        }
+
+        // Add similar calls for other games when available
+        shapeLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">No scores yet</div>';
+        mindLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">No scores yet</div>';
+        
+      } catch (error) {
+        console.error('Error loading game leaderboards:', error);
+        if (error.message !== 'Session expired') {
+          emojiLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">Error loading</div>';
+          shapeLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">No scores yet</div>';
+          mindLeaderboardEl.innerHTML = '<div class="text-center opacity-75 py-4">No scores yet</div>';
+        }
+      }
+    }
+
+    // Helper function for no scores message
+    function showNoScoresMessage(element) {
+      element.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-yellow-300">No scores yet. Be the first to play!</p>
+          <p class="text-sm opacity-75 mt-2">Play games to appear on the leaderboard</p>
+        </div>`;
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg z-50';
+      errorDiv.textContent = message;
+      document.body.appendChild(errorDiv);
+      setTimeout(() => errorDiv.remove(), 3000);
+    }
+
+    // Show success message
+    function showSuccess(message) {
+      const successDiv = document.createElement('div');
+      successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50';
+      successDiv.textContent = message;
+      document.body.appendChild(successDiv);
+      setTimeout(() => successDiv.remove(), 3000);
+    }
+
+    // Event listeners
+    refreshBtn.addEventListener('click', () => {
+      showSuccess('Refreshing leaderboard...');
+      loadAllLeaderboards();
+    });
+    
+    // Game filter functionality
+    gameFilters.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        // Remove active class from all buttons
+        document.querySelectorAll('#gameFilters button').forEach(btn => {
+          btn.classList.remove('active-game', 'bg-opacity-30');
+          btn.classList.add('bg-opacity-10');
+        });
+        
+        // Add active class to clicked button
+        e.target.classList.add('active-game', 'bg-opacity-30');
+        e.target.classList.remove('bg-opacity-10');
+        
+        // Filter functionality can be implemented here
+        const game = e.target.dataset.game;
+        console.log('Filter by game:', game);
+        loadAllLeaderboards();
+      }
+    });
+
+    // ✅ NEW: Initialize with session check
+    function initializePage() {
+      console.log('🎮 Initializing leaderboard page...');
+      
+      // Check if user data exists
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          console.log('✅ User session found:', user.username);
+        } catch (e) {
+          console.log('❌ Invalid user data in localStorage');
+          localStorage.removeItem('userData');
+        }
+      } else {
+        console.log('👤 No user session found - loading public leaderboard');
+      }
+      
+      // Load leaderboards
+      loadAllLeaderboards();
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+</body>
+</html>

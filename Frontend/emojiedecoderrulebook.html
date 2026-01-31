@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Emoji Decoder Rule Book — Play Hive</title>
+  <style>
+    :root {
+      --bg: #e9fdfc;
+      --card: #ffffff;
+      --accent: #00bfa6;
+      --accent-light: #a8fff1;
+      --muted: #3a4b4d;
+      --glass: rgba(0, 191, 166, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--muted);
+      background: linear-gradient(135deg, #c8fff6, #e9fdfc, #d9fff9);
+      background-size: 300% 300%;
+      animation: bgShift 10s ease infinite;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(255,255,255,0.5);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      backdrop-filter: blur(8px);
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    nav .logoArea { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    nav h2 { margin: 0; font-size: 22px; color: var(--accent); letter-spacing: 0.5px; }
+    nav ul { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
+    nav ul li a {
+      text-decoration: none; color: var(--muted);
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 8px 14px;
+      border-radius: 6px;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,191,166,0.3);
+    }
+
+    /* Main Content */
+    .wrap {
+      padding: 60px 24px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin: 0;
+      color: var(--accent);
+      text-align: center;
+      text-shadow: 0 0 8px rgba(0,191,166,0.4);
+      animation: floaty 4s ease-in-out infinite;
+    }
+
+    @keyframes floaty {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    p.lead {
+      color: var(--muted);
+      font-size: 16px;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 40px;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--glass);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 191, 166, 0.08);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgba(0, 191, 166, 0.25);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(0,191,166,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 20px;
+    }
+
+    .card p, .card ul, li {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+
+    /* Button */
+    .play-btn {
+      margin-top: 50px;
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 36px;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0,191,166,0.4);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .play-btn::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -75%;
+      width: 50%; height: 100%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.5), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.6s ease;
+    }
+
+    .play-btn:hover::after { left: 130%; }
+    .play-btn:hover {
+      background: var(--accent-light);
+      color: #00695c;
+      box-shadow: 0 0 25px rgba(0,191,166,0.6);
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logoArea">
+      <h2>Play Hive</h2>
+    </div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="emojiedecoderrulebook.html" class="active">How It Works</a></li>
+      <li><a href="games.html">Games</a></li>
+      
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="wrap">
+    <h1>📘 Emoji Decoder Rule Book</h1>
+    <p class="lead">Learn how to play and become a master at decoding emojis!</p>
+
+    <div class="rules-grid">
+      <div class="card">
+        <h2>🎯 Objective</h2>
+        <p>Your goal is simple — <strong>decode the hidden meaning</strong> behind each emoji combination!  
+        Type the correct phrase, word, or proverb to score points and build your streak.</p>
+      </div>
+
+      <div class="card">
+        <h2>🧩 How To Play</h2>
+        <ul>
+          <li>Observe the emoji puzzle shown on the screen.</li>
+          <li>Type your guess into the answer box.</li>
+          <li>Click <strong>Check</strong> or press <kbd>Enter</kbd>.</li>
+          <li>If correct — celebrate! 🎉 Move to the next puzzle.</li>
+          <li>If not — try again or request a hint.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🏆 Scoring System</h2>
+        <ul>
+          <li>✅ Correct Answer: +10 points</li>
+          <li>❌ Wrong Answer: -2 points</li>
+          <li>🔥 Consecutive Corrects increase your streak bonus.</li>
+          <li>💡 Use hints wisely — they reveal clues but cost your streak.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>💡 Hints & Help</h2>
+        <p>Stuck on a tough one? Tap the <strong>💡 Hint</strong> button to get a clue!  
+        You can also press <strong>🧾 Show Answer</strong> to reveal the correct phrase (no score gained).</p>
+      </div>
+
+      <div class="card">
+        <h2>⚙️ Controls</h2>
+        <ul>
+          <li><kbd>Enter</kbd> — Check your answer</li>
+          <li>◀ Prev / ▶ Next — Switch puzzles</li>
+          <li>🔀 Shuffle — Get new order of puzzles</li>
+          <li>💡 Hint — Get a clue</li>
+          <li>🧾 Show — Reveal the correct answer</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🌟 Tips for Pros</h2>
+        <ul>
+          <li>Think creatively — emojis may represent sounds or idioms.</li>
+          <li>Watch out for hidden wordplays.</li>
+          <li>Use logic and context clues.</li>
+          <li>Stay calm and enjoy the challenge!</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Play Now Button -->
+    <a href="emojidecoder.html" class="play-btn">▶ Play Now</a>
+  </div>
+
+  <footer>© 2025 Play Hive | Crafted with 💚 by Team Hive</footer>
+</body>
+</html>

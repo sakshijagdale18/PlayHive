@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syntax Sprint - Rule Book</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Base Layout ===== */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      color: #1c2b3a;
+      overflow-x: hidden;
+      background: linear-gradient(180deg, #f3f9ff 0%, #e0f0ff 100%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    canvas#bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ===== Navbar ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 40px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-container {
+      width: 90%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h1 {
+      font-size: 1.8rem;
+      color: #2988d8;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #1c2b3a;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #2988d8;
+    }
+
+    /* ===== Header Section ===== */
+    .header {
+      text-align: center;
+      margin-top: 120px;
+      z-index: 5;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      color: #2988d8;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 5px rgba(41, 136, 216, 0.2);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: #4a5a6a;
+    }
+
+    /* ===== Rule Book Container ===== */
+    .book-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 60px;
+      perspective: 2000px;
+      z-index: 5;
+      position: relative;
+    }
+
+    .book {
+      width: 80%;
+      max-width: 1100px;
+      height: 550px;
+      display: flex;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      transform-style: preserve-3d;
+      overflow: hidden;
+      transition: transform 1s;
+      backdrop-filter: blur(15px);
+    }
+
+    .book:hover {
+      transform: rotateY(-4deg);
+    }
+
+    .page {
+      width: 50%;
+      padding: 40px;
+      overflow-y: auto;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .page h2 {
+      color: #2988d8;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .page p {
+      color: #333;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .page:last-child {
+      border-right: none;
+    }
+
+    /* ===== Play Button ===== */
+    .play-btn {
+      display: block;
+      margin: 50px auto 120px;
+      padding: 16px 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(135deg, #63b3ff, #2988d8);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(99, 179, 255, 0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+      z-index: 10;
+      position: relative;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 25px rgba(99, 179, 255, 0.6);
+    }
+
+    /* ===== Scrollbar Styling ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(41, 136, 216, 0.4);
+      border-radius: 5px;
+    }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 900px) {
+      .book {
+        flex-direction: column;
+        height: auto;
+      }
+      .page {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      nav ul {
+        gap: 15px;
+      }
+      nav h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Soft Mesh Background -->
+  <canvas id="bg"></canvas>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-container">
+      <h1>⚡ Play Hive</h1>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="games.html">Games</a></li>
+        <li><a href="Syntaxsprintrulebook.html">How it works</a></li>
+        <li><a href="aboutus.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>⚡ Syntax Sprint</h1>
+    <p>📘 Rule Book – Understand the rules before you sprint through syntax!</p>
+  </div>
+
+  <!-- Rule Book Section -->
+  <div class="book-container">
+    <div class="book">
+      <div class="page">
+        <h2>🕒 Objective</h2>
+        <p>Fix syntax errors and make the code functional before time runs out! The faster and more accurate your corrections, the higher your score.</p>
+
+        <h2>⚡ Gameplay</h2>
+        <p>Each round gives you buggy code. Spot and correct syntax issues quickly! Every submission is checked instantly, giving you live feedback.</p>
+
+        <h2>🏆 Scoring</h2>
+        <p>+10 points for each correct fix. Incorrect fixes cost you 2 points. Time bonuses reward fast thinkers!</p>
+      </div>
+
+      <div class="page">
+        <h2>💡 Tips</h2>
+        <p>Watch for brackets, semicolons, and typos. Syntax Sprint tests both your speed and attention to detail!</p>
+
+        <h2>🚀 Levels</h2>
+        <p>Three levels of difficulty — Beginner, Intermediate, and Expert. Each level shortens the timer and increases code complexity.</p>
+
+        <h2>🎯 Bonus</h2>
+        <p>Fix three codes in a row without mistakes to activate a bonus streak — doubling your score for the next round!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Play Now Button -->
+  <button class="play-btn" onclick="goToGame()">▶ Play Now</button>
+
+  <!-- Three.js Soft Animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // Redirect Function
+    function goToGame() {
+      window.location.href = "syntaxsprinit.html";
+    }
+
+    // ===== Soft 3D Background =====
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg"), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.IcosahedronGeometry(25, 2);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x63b3ff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.15
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    const light = new THREE.PointLight(0xaed7ff, 1.5);
+    light.position.set(20, 20, 20);
+    scene.add(light);
+
+    camera.position.z = 70;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      mesh.rotation.x += 0.003;
+      mesh.rotation.y += 0.002;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlayHive | Features</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #222;
+      overflow-x: hidden;
+      position: relative;
+      background: #f8fbff;
+    }
+
+    /* Video Background */
+    video#bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      filter: brightness(1.1) blur(2px);
+    }
+
+    /* Floating Overlay Gradient */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.6));
+      z-index: -1;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid rgba(0, 153, 255, 0.15);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    nav h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #007bff, #ff3ecf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    nav ul li a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #007bff;
+    }
+
+    nav ul li a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #007bff, #ff3ecf);
+      transition: 0.4s;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-top: 140px;
+      padding: 3rem 2rem;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg, #007bff, #ff3ecf, #00c3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textGlow 3s infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 10px #00c3ff; }
+      100% { text-shadow: 0 0 20px #ff3ecf; }
+    }
+
+    .hero p {
+      color: #444;
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 1rem auto;
+      line-height: 1.8;
+    }
+
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 3rem;
+      padding: 5rem 4rem;
+    }
+
+    .feature-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(0, 153, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 153, 255, 0.1);
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(255, 99, 255, 0.2);
+    }
+
+    .feature-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #007bff;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Floating Colorful Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 10s infinite ease-in-out alternate;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-60px); }
+    }
+
+    .orb1 { background: #ff3ecf; width: 180px; height: 180px; top: 15%; left: 10%; animation-delay: 0s; }
+    .orb2 { background: #00c3ff; width: 220px; height: 220px; top: 55%; right: 8%; animation-delay: 2s; }
+    .orb3 { background: #ffd93e; width: 130px; height: 130px; bottom: 10%; left: 35%; animation-delay: 4s; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      color: #555;
+      border-top: 1px solid rgba(0, 153, 255, 0.2);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero h2 { font-size: 2.3rem; }
+      .features { padding: 3rem 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 🎥 Background Video -->
+  <video autoplay muted loop id="bgVideo">
+    <source src="https://cdn.pixabay.com/video/2022/06/27/120390-727155917_large.mp4" type="video/mp4" />
+  </video>
+  <div class="overlay"></div>
+
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <h1>🎮 PlayHive</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html" class="active">Features</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="games.html">Games</a></li>
+     
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome to the Hive of Fun!</h2>
+    <p>Where creativity meets gaming! Enjoy vibrant visuals, smooth interactions, and endless entertainment with PlayHive’s ever-growing collection of exciting games.</p>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature-card">
+      <h3>🎮 Colorful Game Zone</h3>
+      <p>PlayHive brings fun to life with vibrant colors and lively designs that make every click feel magical.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>🏆 Daily Challenges</h3>
+      <p>Compete daily with friends, earn rewards, and climb the leaderboard with pride.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>💫 Interactive Fun</h3>
+      <p>Feel the energy as animations, sounds, and interactive UI elements respond to your moves.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>🚀 Smart Play AI</h3>
+      <p>Challenge AI opponents that learn and adapt to your playstyle for a dynamic experience.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>🎨 Custom Avatars</h3>
+      <p>Express your gaming personality with colorful avatars and glowing profile frames.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>🌟 Earn Rewards</h3>
+      <p>Collect badges, coins, and exclusive bonuses as you level up your PlayHive journey.</p>
+    </div>
+  </section>
+
+  
+</body>
+</html>

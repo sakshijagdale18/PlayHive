@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Play Hive — Login</title>
+
+  <!-- Use Tailwind CSS CDN for development -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.1/lottie.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, #0a0024, #020010 70%);
+      overflow-y: auto;
+    }
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(#bfe7ff 1px, transparent 1px),
+        radial-gradient(#ffd6ff 1px, transparent 1px);
+      background-size: 220px 220px, 140px 140px, 80px 80px;
+      opacity: 0.5;
+      filter: blur(0.3px);
+      animation: twink 25s linear infinite;
+    }
+    @keyframes twink { 0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)} }
+    .nebula {
+      position: fixed;
+      right: -10%;
+      top: -10%;
+      width: 1100px;
+      height: 1100px;
+      background-image: url('https://images.unsplash.com/photo-1523983303491-64c2f0ce8b1e?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: blur(45px) saturate(120%);
+      opacity: 0.35;
+      mix-blend-mode: screen;
+      transform: rotate(15deg);
+    }
+    .card { 
+      border-radius:20px; 
+      padding:2px; 
+      background:linear-gradient(90deg,rgba(160,90,255,0.95),rgba(70,180,255,0.95)); 
+      box-shadow:0 18px 60px rgba(20,10,40,0.6); 
+    }
+    .card-inner { 
+      border-radius:18px; 
+      background:linear-gradient(180deg,rgba(2,6,23,0.85),rgba(6,3,20,0.75)); 
+      padding:28px; 
+      backdrop-filter:blur(10px) saturate(160%); 
+    }
+    .glass { 
+      background:rgba(255,255,255,0.05); 
+      border:1px solid rgba(255,255,255,0.1); 
+      border-radius:12px; 
+      padding:.75rem 1rem; 
+      width:100%; 
+      color:white; 
+      transition: all 0.2s ease;
+    }
+    .glass:focus {
+      outline: none;
+      border-color: rgba(160,90,255,0.5);
+      box-shadow: 0 0 20px rgba(160,90,255,0.2);
+    }
+    .glass::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    .password-wrapper { position:relative; display:flex; align-items:center; }
+    .eye-btn { 
+      position:absolute; 
+      right:14px; 
+      top:50%; 
+      transform:translateY(-50%); 
+      cursor:pointer; 
+      color:#aaa; 
+      background:transparent; 
+      border:none; 
+      padding:6px; 
+      border-radius: 6px;
+    }
+    .eye-btn:hover { 
+      color:white; 
+      background: rgba(255,255,255,0.1);
+    }
+    .neon-btn { 
+      background:linear-gradient(90deg,rgba(160,90,255,1),rgba(70,180,255,1)); 
+      color:#031022; 
+      font-weight:700; 
+      padding:.8rem 1rem; 
+      border-radius:12px; 
+      width:100%; 
+      transition:all .2s; 
+      border: none;
+      cursor: pointer;
+    }
+    .neon-btn:hover:not(:disabled) { 
+      transform:translateY(-3px); 
+      box-shadow:0 20px 40px rgba(65,90,160,0.24); 
+    }
+    .neon-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .hint { color:rgba(255,255,255,0.7); font-size:0.9rem; }
+    .error { color: #ff6b6b; font-size: 0.85rem; }
+    .success { color: #51cf66; font-size: 0.85rem; }
+    .loading { color: #ffd43b; font-size: 0.85rem; }
+    .input-error {
+      border-color: #ff6b6b !important;
+      box-shadow: 0 0 10px rgba(255,107,107,0.3) !important;
+    }
+    @media(max-width:768px){.card-inner{grid-template-columns:1fr!important;text-align:center}}
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+  <div class="nebula"></div>
+
+  <div class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
+    <div class="w-full max-w-4xl card">
+      <div class="card-inner grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="flex flex-col items-center justify-center text-center">
+          <h1 class="text-3xl font-bold mb-3">Play Hive</h1>
+          <p class="hint mb-6">Enter the gaming universe and unlock your potential</p>
+          <div id="heroLottie" class="w-72 h-72"></div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-extrabold mb-2">Sign In</h2>
+          <p class="hint mb-6">Your gaming journey continues here</p>
+
+          <form id="loginForm" class="space-y-4" novalidate>
+            <div>
+              <label class="text-sm hint block mb-1">Email</label>
+              <input id="email" class="glass" type="email" placeholder="you@playhive.gg" required>
+              <div id="emailError" class="error hidden mt-1"></div>
+            </div>
+
+            <div>
+              <label class="text-sm hint block mb-1">Password</label>
+              <div class="password-wrapper">
+                <input id="password" class="glass pr-10" type="password" placeholder="••••••••" required>
+                <button type="button" id="togglePassword" class="eye-btn">
+                  <i data-lucide="eye"></i>
+                </button>
+              </div>
+              <div id="passwordError" class="error hidden mt-1"></div>
+            </div>
+
+            <button type="submit" id="loginBtn" class="neon-btn">
+              <span id="btnText">Enter Play Hive</span>
+              <span id="btnSpinner" class="hidden">⏳ Signing in...</span>
+            </button>
+            <div id="statusMsg" class="text-sm mt-2"></div>
+
+            <p class="hint text-sm mt-3">New to Play Hive?
+              <a href="register.html" class="underline hover:text-white transition-colors">Create an account</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // // Initialize Lucide icons
+    // lucide.createIcons();
+    
+    // // Lottie animation
+    // lottie.loadAnimation({
+    //   container: document.getElementById('heroLottie'),
+    //   renderer: 'svg',
+    //   loop: true,
+    //   autoplay: true,
+    //   path: 'https://assets8.lottiefiles.com/packages/lf20_w51pcehl.json'
+    // });
+
+    // // DOM Elements
+    // const form = document.getElementById('loginForm');
+    // const email = document.getElementById('email');
+    // const password = document.getElementById('password');
+    // const toggleBtn = document.getElementById('togglePassword');
+    // const msg = document.getElementById('statusMsg');
+    // const btn = document.getElementById('loginBtn');
+    // const btnText = document.getElementById('btnText');
+    // const btnSpinner = document.getElementById('btnSpinner');
+    // const emailError = document.getElementById('emailError');
+    // const passwordError = document.getElementById('passwordError');
+
+    // // 👁 Password toggle
+    // toggleBtn.addEventListener('click', () => {
+    //   const show = password.type === 'password';
+    //   password.type = show ? 'text' : 'password';
+    //   toggleBtn.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`;
+    //   lucide.createIcons();
+    // });
+
+    // // ✅ REMOVED: Auto session verification on load - let user login fresh
+
+    // // ✅ Set loading state
+    // function setLoading(state) {
+    //   btn.disabled = state;
+    //   if (state) {
+    //     btnText.classList.add('hidden');
+    //     btnSpinner.classList.remove('hidden');
+    //   } else {
+    //     btnText.classList.remove('hidden');
+    //     btnSpinner.classList.add('hidden');
+    //   }
+    // }
+
+    // // ✅ Clear errors
+    // function clearErrors() {
+    //   emailError.classList.add('hidden');
+    //   passwordError.classList.add('hidden');
+    //   email.classList.remove('input-error');
+    //   password.classList.remove('input-error');
+    // }
+
+    // // ✅ Show error for specific field
+    // function showError(field, message) {
+    //   field.classList.add('input-error');
+    //   const errorElement = document.getElementById(field.id + 'Error');
+    //   if (errorElement) {
+    //     errorElement.textContent = message;
+    //     errorElement.classList.remove('hidden');
+    //   }
+    // }
+
+    // // ✅ Store user data and redirect
+    // function redirectToDashboard(userData) {
+    //   console.log('Storing user data and redirecting:', userData);
+      
+    //   // Store complete user data in localStorage
+    //   localStorage.setItem('userData', JSON.stringify(userData));
+    //   localStorage.setItem('lastLogin', new Date().toISOString());
+      
+    //   // Force redirect to index.html
+    //   setTimeout(() => {
+    //     window.location.href = 'index.html';
+    //   }, 1000);
+    // }
+
+    // // ✅ Login form submission - SIMPLIFIED VERSION
+    // form.addEventListener('submit', async e => {
+    //   e.preventDefault();
+    //   clearErrors();
+      
+    //   // Client-side validation
+    //   if (!email.value.trim() || !email.value.includes('@')) {
+    //     showError(email, 'Please enter a valid email address');
+    //     return;
+    //   }
+
+    //   if (!password.value) {
+    //     showError(password, 'Please enter your password');
+    //     return;
+    //   }
+
+    //   setLoading(true);
+    //   msg.innerHTML = '<span class="loading">🔐 Connecting to Play Hive...</span>';
+
+    //   try {
+    //     // ✅ Use JSON format for login
+    //     const requestData = {
+    //       email: email.value.trim(),
+    //       password: password.value
+    //     };
+
+    //     console.log('Sending login request:', requestData);
+
+    //     const res = await fetch('http://localhost:8088/api/users/login', {
+    //       method: 'POST',
+    //       headers: { 
+    //         'Content-Type': 'application/json',
+    //       },
+    //       credentials: 'include', // Important for session cookies
+    //       body: JSON.stringify(requestData)
+    //     });
+
+    //     console.log('Login response status:', res.status);
+
+    //     let result;
+        
+    //     try {
+    //       result = await res.json();
+    //       console.log('Login JSON result:', result);
+    //     } catch (jsonError) {
+    //       console.log('Response is not JSON, trying text...');
+    //       const textResult = await res.text();
+    //       console.log('Login text result:', textResult);
+    //       result = { message: textResult };
+    //     }
+
+    //     if (res.ok && result.message === 'Login successful') {
+    //       msg.innerHTML = '<span class="success">✅ Welcome back, ' + result.user.username + '! Redirecting...</span>';
+    //       console.log('Login successful, user data:', result.user);
+          
+    //       // ✅ Store user data and redirect immediately
+    //       redirectToDashboard(result.user);
+          
+    //     } else {
+    //       let errorMessage = 'Login failed';
+          
+    //       if (result.error) {
+    //         errorMessage = result.error;
+    //       } else if (result.message && result.message !== 'Login successful') {
+    //         errorMessage = result.message;
+    //       } else if (result === 'Invalid credentials') {
+    //         errorMessage = 'Invalid email or password';
+    //       }
+          
+    //       msg.innerHTML = `<span class="error">❌ ${errorMessage}</span>`;
+    //       console.error('Login failed:', errorMessage);
+          
+    //       // Show field errors
+    //       if (errorMessage.toLowerCase().includes('email')) {
+    //         showError(email, errorMessage);
+    //       } else if (errorMessage.toLowerCase().includes('password')) {
+    //         showError(password, errorMessage);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error('Login network error:', error);
+    //     msg.innerHTML = '<span class="error">❌ Cannot connect to server. Please check if the backend is running on port 8088.</span>';
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // });
+
+    // // Clear errors when user starts typing
+    // [email, password].forEach(input => {
+    //   input.addEventListener('input', () => {
+    //     input.classList.remove('input-error');
+    //     const errorElement = document.getElementById(input.id + 'Error');
+    //     if (errorElement) {
+    //       errorElement.classList.add('hidden');
+    //     }
+    //   });
+    // });
+
+    // // Test credentials for development
+    // console.log('Test with registered user credentials');
+
+    // DOM Elements
+const form = document.getElementById('loginForm');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const toggleBtn = document.getElementById('togglePassword');
+const msg = document.getElementById('statusMsg');
+const btn = document.getElementById('loginBtn');
+const btnText = document.getElementById('btnText');
+const btnSpinner = document.getElementById('btnSpinner');
+
+// 👁 Password toggle
+toggleBtn.addEventListener('click', () => {
+    const show = password.type === 'password';
+    password.type = show ? 'text' : 'password';
+    toggleBtn.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`;
+    lucide.createIcons();
+});
+
+// ✅ Set loading state
+function setLoading(state) {
+    btn.disabled = state;
+    if (state) {
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+    } else {
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+    }
+}
+
+// ✅ Login form submission - ULTRA SIMPLIFIED VERSION
+form.addEventListener('submit', async e => {
+    e.preventDefault();
+    
+    setLoading(true);
+    msg.innerHTML = '<span class="loading">🔐 Connecting to Play Hive...</span>';
+
+    try {
+        // ✅ Use JSON format for login
+        const requestData = {
+            email: email.value.trim(),
+            password: password.value
+        };
+
+        console.log('Sending login request:', requestData);
+
+        const res = await fetch('http://localhost:8088/api/users/login', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Important for session cookies
+            body: JSON.stringify(requestData)
+        });
+
+        console.log('Login response status:', res.status);
+
+        let result;
+        
+        try {
+            result = await res.json();
+            console.log('Login JSON result:', result);
+        } catch (jsonError) {
+            console.log('Response is not JSON');
+            const textResult = await res.text();
+            console.log('Login text result:', textResult);
+            result = { message: textResult };
+        }
+
+        if (res.ok && result.message === 'Login successful') {
+            msg.innerHTML = '<span class="success">✅ Welcome back, ' + result.user.username + '! Redirecting...</span>';
+            console.log('Login successful, user data:', result.user);
+            
+            // ✅ Store user data in localStorage
+            localStorage.setItem('userData', JSON.stringify(result.user));
+            localStorage.setItem('lastLogin', new Date().toISOString());
+            
+            console.log('User data stored, redirecting to index...');
+            
+            // ✅ Force redirect to index.html
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+            
+        } else {
+            let errorMessage = 'Login failed';
+            
+            if (result.error) {
+                errorMessage = result.error;
+            } else if (result.message) {
+                errorMessage = result.message;
+            }
+            
+            msg.innerHTML = `<span class="error">❌ ${errorMessage}</span>`;
+            console.error('Login failed:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Login network error:', error);
+        msg.innerHTML = '<span class="error">❌ Cannot connect to server. Please check if backend is running on port 8088.</span>';
+    } finally {
+        setLoading(false);
+    }
+});
+
+// Test credentials for development
+console.log('Test with registered user credentials');
+  </script>
+</body>
+</html>

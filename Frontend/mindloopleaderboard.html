@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MindLoop Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top, #1e293b, #0f172a);
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #ffd700;
+      margin-bottom: 40px;
+      font-size: 2.8em;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    table {
+      width: 85%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    th, td {
+      padding: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 1.1em;
+    }
+
+    th {
+      background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+      color: #ffd700;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    tr:first-child td {
+      background: linear-gradient(90deg, #ffd700, #ffcc33);
+      color: black;
+      font-weight: 700;
+    }
+
+    tr:nth-child(2) td {
+      background: linear-gradient(90deg, #c0c0c0, #d4d4d4);
+      color: black;
+      font-weight: 600;
+    }
+
+    tr:nth-child(3) td {
+      background: linear-gradient(90deg, #cd7f32, #b87333);
+      color: black;
+      font-weight: 600;
+    }
+
+    button {
+      margin-top: 35px;
+      background: linear-gradient(90deg, #ffd700, #facc15);
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      color: black;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      margin-top: 50px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 MindLoop Leaderboard</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Score</th>
+        <th>Date Played</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboard"></tbody>
+  </table>
+
+  <button onclick="window.location.href='mindloop.html'">🎮 Play Again</button>
+
+  <footer>Powered by <strong>GameNest</strong> • Keep Looping Your Mind 🌀</footer>
+
+  <script>
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch("http://localhost:8080/api/mindloop/leaderboard");
+        const data = await res.json();
+
+        const table = document.getElementById("leaderboard");
+        table.innerHTML = "";
+
+        data.forEach((item, i) => {
+          const date = item.datePlayed ? item.datePlayed.replace("T", " ").substring(0, 19) : "—";
+          table.innerHTML += `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${item.username}</td>
+              <td>${item.score}</td>
+              <td>${date}</td>
+            </tr>`;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadLeaderboard();
+  </script>
+</body>
+</html>

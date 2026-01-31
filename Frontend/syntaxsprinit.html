@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play Hive | Syntax Sprint</title>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+      color: #3a3a3a;
+      background: linear-gradient(180deg, #fffbea 0%, #fff3c4 100%);
+      animation: fadeIn 1.5s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+    .star { position: absolute; background: rgba(255,215,0,0.6); border-radius: 50%; animation: float 6s infinite ease-in-out; }
+    @keyframes float { 0%,100%{opacity:.4;transform:translateY(0)scale(.8)}50%{opacity:1;transform:translateY(-10px)scale(1.2)}}
+
+    header {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      padding: 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255,204,0,0.4);
+      box-shadow: 0 4px 25px rgba(255,220,50,0.2);
+      position: sticky; top: 0; z-index: 10;
+    }
+    header h1 { color: #d8a300; margin: 0; font-size: 1.7rem; font-weight: 700; }
+    nav a { margin-left: 25px; text-decoration: none; color: #5b4c00; transition: color 0.3s; }
+    nav a:hover { color: #d8a300; }
+
+    .container {
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2.3rem;
+      color: #d8a300;
+      text-shadow: 0 0 10px rgba(255,235,120,0.6);
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,210,0,0.3);
+      padding: 10px 25px;
+      border-radius: 12px;
+      display: inline-block;
+      backdrop-filter: blur(5px);
+    }
+
+    .language-select { margin: 20px auto; color: #5a4a00; font-weight: 500; }
+    select {
+      background: #fff8dc;
+      border: 1px solid #e6c200;
+      color: #5a4a00;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    select:hover { box-shadow: 0 0 12px rgba(255,204,0,0.5); transform: scale(1.05); }
+
+    .timer-score {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      color: #5b4c00;
+    }
+
+    .progress-bar { width: 100%; height: 10px; border-radius: 10px; background: #f7e8a2; margin-bottom: 25px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #fdd835, #ffb300); transition: width 1s linear; }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.8);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255,210,0,0.3);
+      box-shadow: 0 0 25px rgba(255,200,0,0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .panel:hover { transform: translateY(-4px); box-shadow: 0 0 25px rgba(255,210,0,0.5); }
+
+    pre, textarea {
+      background: #fff3c4;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    pre { padding: 15px; overflow-x: auto; }
+    textarea { height: 130px; margin-top: 15px; padding: 12px; border: 1px solid #d6b600; resize: none; }
+
+    button {
+      background: linear-gradient(45deg, #fdd835, #ffb300);
+      border: none; color: #3b3000;
+      padding: 10px 22px;
+      margin-top: 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,235,120,0.6); }
+
+    /* 🧾 Leaderboard */
+    .leaderboard {
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255,210,0,0.3);
+      box-shadow: 0 0 20px rgba(255,200,0,0.2);
+    }
+    .leaderboard h3 { color: #d8a300; margin-bottom: 10px; }
+    .leaderboard ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+    }
+    .leaderboard li {
+      background: #fff8dc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #f1d36a;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+    }
+
+    .celebrate { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+  </style>
+</head>
+
+<body>
+  <div id="stars"></div>
+
+  <header>
+    <h1>☀️ Play Hive</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="Syntaxsprintrulebook.html">Rulebook</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Syntax Sprint ⚡</h2>
+    <p>Fix syntax errors before time runs out! Type the correct code and hit Submit 🧠</p>
+
+    <div class="language-select">
+      <label for="language">Choose Language:</label>
+      <select id="language" onchange="changeLanguage()">
+        <option value="javascript">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+      </select>
+    </div>
+
+    <div class="timer-score">
+      <div>⏳ Time Left: <span id="timer">120</span>s</div>
+      <div>🏆 Score: <span id="score">0</span></div>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+    <div class="game-layout">
+      <div>
+        <div class="panel">
+          <h3>🧩 Fix this code:</h3>
+          <pre id="codeSnippet"></pre>
+          <textarea id="userCode" placeholder="Type your fixed code here..."></textarea><br>
+          <button onclick="checkCode()">Submit 🚀</button>
+          <button onclick="changeQuestion()">Next 🔄</button>
+        </div>
+
+        <div class="panel result" id="resultPanel">
+          <h3>💡 Output will appear here!</h3>
+        </div>
+      </div>
+
+      <div class="leaderboard">
+        <h3>🏅 Leaderboard</h3>
+        <ol id="leaderList">
+          <li><span>Rutuja</span><span>0</span></li>
+          <li><span>Aarya</span><span>0</span></li>
+          <li><span>Neha</span><span>0</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <canvas class="celebrate" id="confettiCanvas"></canvas>
+
+  <script>
+    /* Floating Stars */
+    const starsContainer = document.getElementById("stars");
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement("div");
+      s.classList.add("star");
+      const size = Math.random() * 3 + 2;
+      s.style.width = `${size}px`;
+      s.style.height = `${size}px`;
+      s.style.left = `${Math.random() * 100}%`;
+      s.style.top = `${Math.random() * 100}%`;
+      s.style.animationDelay = `${Math.random() * 5}s`;
+      starsContainer.appendChild(s);
+    }
+
+    const questionSets = {
+      javascript: [
+        { question: `function greet{\n  console.log("Hello")\n}`, answer: `function greet() {\n  console.log("Hello");\n}`, explanation: "Missing parentheses after function name." },
+        { question: `if (x = 5) {\n  console.log("Equal");\n}`, answer: `if (x == 5) {\n  console.log("Equal");\n}`, explanation: "Use '==' for comparison." },
+      ],
+      python: [
+        { question: `print "Hello"`, answer: `print("Hello")`, explanation: "Python 3 requires parentheses for print." },
+      ],
+      java: [
+        { question: `public class Main {\n  public static void main(String args) {\n    System.out.println("Hi")\n  }\n}`, answer: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hi");\n  }\n}`, explanation: "Missing [] and semicolon." }
+      ]
+    };
+
+    let currentSet = questionSets.javascript;
+    let current = 0, score = 0, timeLeft = 120;
+    let timerInterval;
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 120;
+      document.getElementById("timer").innerText = timeLeft;
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = timeLeft;
+        document.getElementById("progress").style.width = (timeLeft / 120) * 100 + "%";
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          showResult("⏰ Time's up!", false);
+        }
+      }, 1000);
+    }
+
+    function showQuestion() {
+      document.getElementById("codeSnippet").textContent = currentSet[current].question;
+      document.getElementById("userCode").value = "";
+      document.getElementById("resultPanel").innerHTML = `<h3>💡 Output will appear here!</h3>`;
+      document.getElementById("progress").style.width = "100%";
+      startTimer();
+    }
+
+    function changeLanguage() {
+      const lang = document.getElementById("language").value;
+      currentSet = questionSets[lang];
+      current = 0;
+      showQuestion();
+    }
+
+    function changeQuestion() {
+      current = (current + 1) % currentSet.length;
+      showQuestion();
+    }
+
+    function checkCode() {
+      const userCode = document.getElementById("userCode").value.trim();
+      const correct = currentSet[current].answer.trim();
+      if (userCode === correct) {
+        score += 10;
+        document.getElementById("score").innerText = score;
+        updateLeaderboard("Rutuja", score);
+        showResult("🎉 Correct!", true);
+        confetti();
+      } else showResult("❌ Try Again!", false);
+    }
+
+    function updateLeaderboard(name, newScore) {
+      const list = document.getElementById("leaderList");
+      const entries = Array.from(list.children).map(li => ({
+        name: li.children[0].textContent,
+        score: parseInt(li.children[1].textContent)
+      }));
+      const player = entries.find(p => p.name === name);
+      if (player) player.score = newScore;
+      entries.sort((a,b) => b.score - a.score);
+      list.innerHTML = entries.map(e => `<li><span>${e.name}</span><span>${e.score}</span></li>`).join("");
+    }
+
+    function showResult(title, isCorrect) {
+      const q = currentSet[current];
+      document.getElementById("resultPanel").innerHTML = `
+        <h3 class="${isCorrect ? 'correct' : 'wrong'}">${title}</h3>
+        <h4>✅ Correct Code:</h4>
+        <pre>${q.answer}</pre>
+        <p>🧠 ${q.explanation}</p>`;
+    }
+
+    function confetti() {
+      const canvas = document.getElementById("confettiCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = Array.from({length: 120}).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 4 + 1,
+        d: Math.random() * 150,
+        color: `hsl(${50 + Math.random() * 30},100%,${50 + Math.random() * 20}%)`
+      }));
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        particles.forEach(p => { ctx.fillStyle = p.color; ctx.fillRect(p.x,p.y,p.r,p.r); p.y += Math.cos(p.d)+1; p.x += Math.sin(p.d); if(p.y>canvas.height) p.y=-10; });
+      }
+      const interval = setInterval(draw, 20);
+      setTimeout(() => clearInterval(interval), 2500);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

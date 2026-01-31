@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shape Shifter Leaderboard 🌀</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #00d4ff;
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th {
+      background-color: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+      font-size: 1rem;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .loading {
+      color: #aaa;
+      margin-top: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Shape Shifter Leaderboard 🌀</h1>
+
+  <!-- 🏆 Leaderboard Table -->
+  <div class="leaderboard">
+    <h3>Top 10 Players</h3>
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Score</th>
+          <th>Level</th>
+          <th>Streak</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5" class="loading">Loading leaderboard...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8080/api/shapeshifter";
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch(`${API_URL}/top`);
+        const data = await res.json();
+        const tbody = document.querySelector("#leaderboardTable tbody");
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="loading">No scores yet!</td></tr>`;
+          return;
+        }
+
+        data.forEach((player, index) => {
+          const row = `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${player.username}</td>
+              <td>${player.score}</td>
+              <td>${player.level}</td>
+              <td>${player.streak}</td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error("Error loading leaderboard:", error);
+        document.querySelector("#leaderboardTable tbody").innerHTML =
+          `<tr><td colspan="5" class="loading">⚠️ Failed to load data</td></tr>`;
+      }
+    }
+
+    window.onload = loadLeaderboard;
+  </script>
+
+</body>
+</html>

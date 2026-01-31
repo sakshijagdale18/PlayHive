@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | Play Hive</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ph-pink': '#ffc8dd',
+            'ph-lavender': '#cdb4db',
+            'ph-white': '#fff0f6',
+            'ph-text': '#6a4c93',
+          },
+          keyframes: {
+            floaty: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            fadeIn: {
+              '0%': { opacity: 0, transform: 'translateY(10px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          },
+          animation: {
+            floaty: 'floaty 6s ease-in-out infinite',
+            fadeIn: 'fadeIn 1s ease-in-out',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe6f1, #f7e6ff, #fdf0ff);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.6; animation: floaty 10s ease-in-out infinite; }
+    .orb1 { width: 400px; height: 400px; background: #ffc8dd; top: -100px; left: -100px; }
+    .orb2 { width: 500px; height: 500px; background: #cdb4db; bottom: -150px; right: -150px; animation-delay: 3s; }
+
+    .nav { backdrop-filter: blur(25px); background: rgba(255, 255, 255, 0.6); border-bottom: 2px solid rgba(255, 255, 255, 0.4); }
+    input:focus { outline: none; border-color: #f4a6d7; box-shadow: 0 0 0 3px rgba(244, 166, 215, 0.4); }
+    .btn { background: linear-gradient(90deg, #fbb1bd, #cdb4db); color: #fff; font-weight: 600; transition: all 0.3s ease; }
+    .btn:hover { transform: translateY(-2px); background: linear-gradient(90deg, #fda4af, #cdb4db); }
+    .msg { animation: fadeIn 0.8s ease-in-out; }
+  </style>
+</head>
+
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <!-- Navigation -->
+  <nav class="nav w-full fixed top-0 left-0 z-50 px-8 py-4 flex justify-between items-center shadow-sm">
+    <h1 class="text-2xl font-bold text-ph-text tracking-tight">🎮 Play Hive</h1>
+    <ul class="hidden md:flex gap-8 text-ph-text font-medium">
+      <li><a href="index.html" class="hover:text-[#d88ec8] transition">Home</a></li>
+      <li><a href="games.html" class="hover:text-[#d88ec8] transition">Games</a></li>
+      <li><a href="leaderboard.html" class="hover:text-[#d88ec8] transition">Leaderboard</a></li>
+      <li><a href="aboutus.html" class="hover:text-[#d88ec8] transition">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- Profile Section -->
+  <section class="pt-32 pb-16 flex justify-center items-center animate-fadeIn relative z-10">
+    <div class="w-[90%] max-w-5xl bg-white/60 backdrop-blur-lg rounded-3xl p-10 flex flex-col md:flex-row gap-10 shadow-lg">
+      
+      <div class="flex-1 flex flex-col items-center justify-center text-center">
+        <div class="relative w-40 h-40 mb-5">
+          <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="rounded-full w-full h-full border-4 border-[#ffe6f1] shadow-md" alt="Profile" />
+        </div>
+        <h2 id="helloUser" class="text-2xl font-semibold text-ph-text mb-1">Hello, User!</h2>
+        <p class="text-ph-text/70 text-sm">Let’s update your details 💕</p>
+      </div>
+
+      <div class="flex-1">
+        <form id="profileForm" class="space-y-6">
+          <input type="hidden" id="userId">
+
+          <div>
+            <label class="block text-sm font-semibold text-ph-text mb-1">Username</label>
+            <input id="username" type="text" class="w-full px-4 py-2.5 rounded-xl border border-[#eeddf5] bg-white/60 text-ph-text" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-ph-text mb-1">Email</label>
+            <input id="email" type="email" class="w-full px-4 py-2.5 rounded-xl border border-[#eeddf5] bg-white/60 text-ph-text"  />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-ph-text mb-1">Password</label>
+            <input id="password" type="password" class="w-full px-4 py-2.5 rounded-xl border border-[#eeddf5] bg-white/60 text-ph-text" />
+          </div>
+
+          <button type="submit" class="btn w-full py-3 rounded-xl text-lg">💾 Save Changes</button>
+          <p id="saveMsg" class="hidden text-green-700 text-center mt-3 font-medium msg">✅ Changes Saved Successfully!</p>
+          <p id="saveError" class="hidden text-red-700 text-center mt-3 font-medium msg"></p>
+
+          <div class="text-center mt-6">
+            <a href="index.html" class="inline-block bg-[#f4a6d7] text-white px-6 py-2 rounded-xl hover:bg-[#f28abf] transition font-semibold shadow-md">
+              ⬅️ Back to Homepage
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const helloUser = document.getElementById('helloUser');
+    const form = document.getElementById('profileForm');
+    const msg = document.getElementById('saveMsg');
+    const saveError = document.getElementById('saveError');
+
+    const userIdInput = document.getElementById('userId');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    // Load user info from localStorage
+    const storedEmail = localStorage.getItem('userEmail');
+    if (!storedEmail) {
+      alert("User not logged in");
+    } else {
+      fetch(`http://localhost:8080/api/users/profile?email=${encodeURIComponent(storedEmail)}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Profile not found");
+          return res.json();
+        })
+        .then(data => {
+          userIdInput.value = data.id;
+          usernameInput.value = data.username;
+          emailInput.value = data.email;
+          passwordInput.value = data.password;
+          helloUser.textContent = `Hello, ${data.username}!`;
+        })
+        .catch(err => console.error("Error fetching profile:", err));
+    }
+
+    // Handle profile update
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      msg.classList.add('hidden');
+      saveError.classList.add('hidden');
+
+      const id = userIdInput.value;
+      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      fetch(`http://localhost:8080/api/users/update/${id}?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+        method: 'PUT'
+      })
+      .then(res => res.text())
+      .then(text => {
+        if (text === 'updated') {
+          msg.classList.remove('hidden');
+          helloUser.textContent = `Hello, ${username}!`;
+          localStorage.setItem('userEmail', email); // update localStorage if email changed
+        } else {
+          saveError.textContent = "Update failed: " + text;
+          saveError.classList.remove('hidden');
+        }
+      })
+      .catch(err => {
+        saveError.textContent = "Error updating profile!";
+        saveError.classList.remove('hidden');
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>

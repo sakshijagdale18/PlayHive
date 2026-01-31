@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play Hive | Games Section</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            phDark: '#eaf4ff',
+            phAccent: '#7a8cff',
+            phSoft: '#b8c6ff'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(circle at top, #b8c6ff 0%, #eaf4ff 80%);
+      font-family: 'Poppins', sans-serif;
+      color: #1c1c2b;
+      overflow-x: hidden;
+      background-attachment: fixed;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Glassy card with cool blue glow */
+    .glass {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(122, 140, 255, 0.3);
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(122, 140, 255, 0.15);
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      transform: translateY(0);
+    }
+    .glass:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 0 35px rgba(122, 140, 255, 0.4);
+    }
+
+    .btn-accent {
+      background: linear-gradient(90deg, #7a8cff, #8ec5ff);
+      color: #ffffff;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .btn-accent:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(138, 160, 255, 0.6);
+    }
+
+    .btn-outline {
+      border: 2px solid #7a8cff;
+      color: #7a8cff;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: #7a8cff;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(122, 140, 255, 0.6);
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(122, 140, 255, 0.2);
+      animation: slideDown 0.8s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .nav-item {
+      transition: color 0.3s ease;
+    }
+
+    .nav-item:hover {
+      color: #7a8cff;
+    }
+
+    .blurred {
+      filter: blur(4px) brightness(0.8);
+    }
+
+    .coming-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(122, 140, 255, 0.4);
+      color: white;
+      font-weight: bold;
+      font-size: 1.3rem;
+      border-radius: 1rem;
+    }
+
+    /* Floating animation for cards */
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .float {
+      animation: floaty 4s ease-in-out infinite;
+    }
+
+    /* Subtle texture overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/symphony.png');
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    /* Session status styles */
+    .session-valid { color: #10b981; }
+    .session-invalid { color: #ef4444; }
+    .session-checking { color: #f59e0b; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center px-10 py-4 fixed w-full top-0 z-50">
+    <h1 class="text-2xl font-bold text-phAccent">Play Hive</h1>
+    
+    <!-- Enhanced user status -->
+    <div id="userStatus" class="flex items-center gap-4">
+      <div id="userInfo" class="text-sm text-gray-700">
+        <div class="flex items-center gap-2">
+          <span id="userIcon">👤</span>
+          <span id="userName" class="font-medium">Guest</span>
+        </div>
+        <div id="loginStatus" class="text-xs session-checking">Checking session...</div>
+      </div>
+      <ul class="flex gap-6 text-gray-800 font-medium">
+        <li><a href="index.html" class="nav-item">Home</a></li>
+        <li><a href="games.html" class="text-phAccent font-semibold">Games</a></li>
+       
+        <li><a href="aboutus.html" class="nav-item">About</a></li>
+        
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="pt-32 text-center mb-16 px-6">
+    <h2 class="text-4xl font-bold mb-4 text-gray-900">
+      🎮 Explore <span class="text-phAccent">Exciting Games</span>
+    </h2>
+    <p class="text-gray-600 max-w-2xl mx-auto">
+      Test your reflexes, sharpen your mind, and explore unique challenges — all in one place.
+    </p>
+  </section>
+
+  <!-- GAMES GRID -->
+  <section class="grid md:grid-cols-3 sm:grid-cols-2 gap-10 max-w-7xl mx-auto px-6 pb-20">
+
+     
+   
+
+    <!-- 😎 Emoji Decoder -->
+    <div class="glass p-5 float" style="animation-delay: 0.5s;">
+      <div>
+        <img src="media/EVrIUuIX0AIKOgr.png" class="rounded-xl mb-4 h-48 w-full object-cover" />
+        <h3 class="text-2xl font-bold text-phAccent mb-1">😎 Emoji Decoder</h3>
+        <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+          Decode emoji puzzles to reveal hidden phrases and idioms! Example: 🐝➕🍯 = "Be Sweet." Test your emoji logic!
+        </p>
+      </div>
+      <div class="flex justify-between mt-5">
+        <button data-game="emojidecoder.html" class="px-4 py-2 btn-accent play-btn">Play Now</button>
+        <button onclick="location.href='emojiedecoderrulebook.html'" class="px-4 py-2 btn-outline">View Rules</button>
+      </div>
+    </div>
+
+   
+
+    <!-- 🧠 Mind Loop -->
+    <div class="glass p-5 float">
+      <div>
+        <img src="media/mindloop.jpeg" class="rounded-xl mb-4 h-48 w-full object-cover" />
+        <h3 class="text-2xl font-bold text-phAccent mb-1">🧠 Mind Loop</h3>
+        <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+          Remember glowing tile sequences before they fade. Each round gets faster — can your memory keep up?
+        </p>
+      </div>
+      <div class="flex justify-between mt-5">
+        <button data-game="mindloop.html" class="px-4 py-2 btn-accent play-btn">Play Now</button>
+        <button onclick="location.href='mindlooprulebook.html'" class="px-4 py-2 btn-outline">View Rules</button>
+      </div>
+    </div>
+
+    <!-- 🌀 Shape Shifter -->
+    <div class="glass p-5 float">
+      <div>
+        <img src="media/image3.png" class="rounded-xl mb-4 h-48 w-full object-cover" />
+        <h3 class="text-2xl font-bold text-phAccent mb-1">🌀 Shape Shifter</h3>
+        
+        <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+          Find the odd shape among lookalikes before time runs out! A thrilling test of observation and reflexes.
+        </p>
+      </div>
+      <div class="flex justify-between mt-5">
+        <button data-game="shapeshifter.html" class="px-4 py-2 btn-accent play-btn">Play Now</button>
+        <button onclick="location.href='shapeshifterrulebook.html'" class="px-4 py-2 btn-outline">View Rules</button>
+      </div>
+    </div>
+
+    <!-- Coming Soon Games -->
+    <div class="glass p-5 relative float">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800" class="rounded-xl mb-4 h-48 w-full object-cover blurred" />
+        <div class="coming-overlay">🎮 Coming Soon</div>
+      </div>
+      <h3 class="text-2xl font-bold text-phAccent mb-1">Cyber Circuit</h3>
+      <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+        Drift through neon tracks, hack checkpoints, and outsmart opponents in this futuristic racing challenge.
+      </p>
+    </div>
+
+    <div class="glass p-5 relative float">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800" class="rounded-xl mb-4 h-48 w-full object-cover blurred" />
+        <div class="coming-overlay">🎮 Coming Soon</div>
+      </div>
+      <h3 class="text-2xl font-bold text-phAccent mb-1">Echo Quest</h3>
+      <p class="text-gray-700 text-sm mt-2 leading-relaxed">
+        A mysterious rhythm-based adventure where sound reveals the unseen. Tune your senses — launching soon!
+      </p>
+    </div>
+  </section>
+
+  <!-- Session Toast Notification -->
+  <div id="sessionToast" class="fixed top-4 right-4 bg-white border-l-4 border-yellow-500 shadow-lg rounded-lg p-4 max-w-sm hidden z-50">
+    <div class="flex items-start">
+      <div class="flex-shrink-0">⚠️</div>
+      <div class="ml-3">
+        <p id="toastMessage" class="text-sm text-gray-800"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  class SessionManager {
+    constructor() {
+      this.isLoggedIn = false;
+      this.username = null;
+      this.sessionChecked = false;
+    }
+
+    async init() {
+      await this.checkSessionState();
+      this.setupEventListeners();
+    }
+
+    async checkSessionState() {
+      const userData = localStorage.getItem('userData');
+      
+      // Update UI to show checking state
+      this.updateUI('checking', 'Checking session...');
+      
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          console.log('🎮 Games page: User session found for', user.username);
+          
+          // Use the same simple validation as index page
+          const sessionValid = await this.validateSession();
+          
+          if (sessionValid) {
+            console.log('✅ Session valid for', user.username);
+            this.isLoggedIn = true;
+            this.username = user.username;
+            this.updateUI('valid', `Logged in as ${user.username}`);
+          } else {
+            console.log('❌ Session invalid - clearing local storage');
+            this.clearInvalidSession();
+            this.updateUI('invalid', 'Session expired');
+            this.showToast('Your session has expired. Please login again.');
+          }
+        } catch (e) {
+          console.log('❌ Invalid user data in localStorage');
+          this.clearInvalidSession();
+          this.updateUI('invalid', 'Invalid session data');
+        }
+      } else {
+        console.log('🎮 Games page: No user session found (guest mode)');
+        this.updateUI('guest', 'Play as Guest');
+      }
+      
+      this.sessionChecked = true;
+    }
+
+    async validateSession() {
+      try {
+        // Simple validation - just check if we have valid user data
+        const userData = localStorage.getItem('userData');
+        if (!userData) return false;
+        
+        const user = JSON.parse(userData);
+        
+        // Optional: Add a quick backend check if you want, but make it fail-safe
+        try {
+          const response = await fetch('http://localhost:8088/api/users/me', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Cache-Control': 'no-cache'
+            }
+          });
+          
+          if (response.ok) {
+            return true;
+          }
+          // If backend check fails, still allow based on localStorage
+          console.log('⚠️ Backend check failed, using localStorage session');
+          return true; // Fallback to localStorage
+        } catch (backendError) {
+          console.log('⚠️ Backend unavailable, using localStorage session');
+          return true; // Fallback to localStorage if backend is down
+        }
+        
+      } catch (error) {
+        console.log('🔍 Session validation failed:', error);
+        return false;
+      }
+    }
+
+    clearInvalidSession() {
+      localStorage.removeItem('userData');
+      localStorage.removeItem('lastLogin');
+      this.isLoggedIn = false;
+      this.username = null;
+    }
+
+    updateUI(status, message) {
+      const userNameEl = document.getElementById('userName');
+      const loginStatusEl = document.getElementById('loginStatus');
+      const userIconEl = document.getElementById('userIcon');
+
+      if (!userNameEl || !loginStatusEl || !userIconEl) {
+        console.log('❌ Session UI elements not found');
+        return;
+      }
+
+      switch(status) {
+        case 'checking':
+          userNameEl.textContent = 'Checking...';
+          loginStatusEl.textContent = message;
+          loginStatusEl.className = 'text-xs session-checking';
+          userIconEl.textContent = '⏳';
+          break;
+        case 'valid':
+          userNameEl.textContent = this.username;
+          loginStatusEl.textContent = message;
+          loginStatusEl.className = 'text-xs session-valid';
+          userIconEl.textContent = '👤';
+          break;
+        case 'invalid':
+          userNameEl.textContent = 'Guest';
+          loginStatusEl.textContent = message;
+          loginStatusEl.className = 'text-xs session-invalid';
+          userIconEl.textContent = '🚫';
+          break;
+        case 'guest':
+          userNameEl.textContent = 'Guest';
+          loginStatusEl.textContent = message;
+          loginStatusEl.className = 'text-xs text-gray-500';
+          userIconEl.textContent = '👤';
+          break;
+      }
+    }
+
+    showToast(message) {
+      const toast = document.getElementById('sessionToast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      if (!toast || !toastMessage) {
+        console.log('Toast elements not found');
+        return;
+      }
+      
+      toastMessage.textContent = message;
+      toast.classList.remove('hidden');
+      
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    navigateToGame(gameUrl) {
+      console.log('🚀 Navigating to:', gameUrl);
+      
+      if (!this.isLoggedIn && this.sessionChecked) {
+        // Show gentle reminder for guest users with option to go to login
+        const userChoice = confirm(
+          'You are playing as a guest. Login to save your scores and compete on the leaderboard!\n\n' +
+          'Click "OK" to go to login page, or "Cancel" to play as guest.'
+        );
+        
+        if (userChoice) {
+          window.location.href = 'login.html';
+          return;
+        }
+      }
+      
+      window.location.href = gameUrl;
+    }
+
+    setupEventListeners() {
+      // Setup play buttons
+      const playButtons = document.querySelectorAll('.play-btn');
+      playButtons.forEach(button => {
+        const gameUrl = button.getAttribute('data-game');
+        button.addEventListener('click', () => this.navigateToGame(gameUrl));
+      });
+
+      // Add login link to guest status
+      const loginStatusEl = document.getElementById('loginStatus');
+      if (loginStatusEl && !this.isLoggedIn && this.sessionChecked) {
+        loginStatusEl.innerHTML = '<a href="login.html" class="underline hover:text-phAccent transition-colors">Login to save scores</a>';
+      }
+
+      // Add logout functionality if user is logged in
+      if (this.isLoggedIn) {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.logout();
+          });
+        }
+      }
+    }
+
+    async logout() {
+      try {
+        await fetch('http://localhost:8088/api/users/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.log('Logout API call failed, continuing with client-side logout');
+      }
+      
+      // Clear all storage and redirect (matching index page behavior)
+      localStorage.removeItem('userData');
+      localStorage.removeItem('lastLogin');
+      sessionStorage.clear();
+      
+      window.location.href = 'login.html';
+    }
+
+    // Method to manually refresh session
+    async refreshSession() {
+      console.log('🔄 Manually refreshing session...');
+      await this.checkSessionState();
+    }
+  }
+
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    window.sessionManager = new SessionManager();
+    window.sessionManager.init();
+
+    // Add debug button (optional - remove in production)
+    const debugBtn = document.createElement('button');
+    debugBtn.textContent = '🐛 Debug Session';
+    debugBtn.className = 'fixed bottom-4 left-4 bg-gray-800 text-white px-3 py-2 rounded-lg text-xs z-50';
+    debugBtn.onclick = async function() {
+      console.clear();
+      console.log('🔍 === SESSION DEBUG INFO ===');
+      console.log('📍 Current URL:', window.location.href);
+      console.log('🍪 Cookies:', document.cookie);
+      console.log('💾 localStorage userData:', localStorage.getItem('userData'));
+      console.log('💾 localStorage lastLogin:', localStorage.getItem('lastLogin'));
+      console.log('🔐 Session Manager State:', {
+        isLoggedIn: window.sessionManager.isLoggedIn,
+        username: window.sessionManager.username,
+        sessionChecked: window.sessionManager.sessionChecked
+      });
+      
+      // Test backend connection
+      try {
+        const response = await fetch('http://localhost:8088/api/users/me', {
+          credentials: 'include'
+        });
+        console.log('🔧 Backend Response Status:', response.status);
+        if (response.ok) {
+          const userInfo = await response.json();
+          console.log('🔧 Backend User Info:', userInfo);
+        }
+      } catch (error) {
+        console.log('❌ Backend connection failed:', error);
+      }
+      
+      // Refresh session
+      await window.sessionManager.refreshSession();
+    };
+    document.body.appendChild(debugBtn);
+
+    console.log('🎮 Games page initialized');
+  });
+
+  // Add manual session refresh capability
+  window.refreshSession = function() {
+    if (window.sessionManager) {
+      window.sessionManager.refreshSession();
+    }
+  };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome | Play Hive</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ph-bg': '#0a0a1a',
+            'ph-accent': '#93eaff',
+            'ph-purple': '#cdb4ff',
+            'ph-blue': '#80ed99',
+          },
+          keyframes: {
+            float: { 
+              '0%,100%': { transform: 'translateY(0)' }, 
+              '50%': { transform: 'translateY(-25px)' } 
+            },
+            glowPulse: {
+              '0%,100%': { boxShadow: '0 0 10px #93eaff, 0 0 20px #cdb4ff' },
+              '50%': { boxShadow: '0 0 30px #80ed99, 0 0 60px #93eaff' }
+            },
+            bgShift: {
+              '0%,100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' }
+            }
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            glowPulse: 'glowPulse 3s ease-in-out infinite',
+            bgShift: 'bgShift 10s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a0a1a, #171738, #0f0f26);
+      background-size: 300% 300%;
+      animation: bgShift 15s ease infinite;
+      color: #f5f5f5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      animation: gridMove 25s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    /* Floating pastel orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.3;
+      z-index: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb:nth-child(1) {
+      width: 350px; height: 350px;
+      background: #93eaff;
+      top: 10%; left: 10%;
+    }
+    .orb:nth-child(2) {
+      width: 400px; height: 400px;
+      background: #cdb4ff;
+      bottom: 15%; right: 10%;
+      animation-delay: 2s;
+    }
+    .orb:nth-child(3) {
+      width: 250px; height: 250px;
+      background: #80ed99;
+      top: 60%; left: 70%;
+      animation-delay: 3s;
+    }
+
+    /* Glass card effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      transition: all 0.4s ease;
+      box-shadow: 0 0 20px rgba(147, 234, 255, 0.1);
+    }
+
+    .glass:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 40px rgba(147, 234, 255, 0.3);
+    }
+
+    .nav-glass {
+      background: rgba(20, 20, 40, 0.6);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating Glows -->
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 w-full z-20 nav-glass">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-ph-accent to-ph-purple flex items-center justify-center animate-glowPulse">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2 L16 6 L12 10 L8 6 Z" />
+            <circle cx="12" cy="14" r="4" />
+          </svg>
+        </div>
+        <span class="font-extrabold text-lg tracking-wide text-white">Play Hive</span>
+      </div>
+
+      
+
+      <div class="hidden sm:flex gap-2">
+        <a href="login.html" class="px-4 py-2 border border-ph-accent text-ph-accent rounded-full hover:bg-ph-accent hover:text-ph-bg transition">Login</a>
+        <a href="register.html" class="px-4 py-2 bg-gradient-to-r from-ph-accent to-ph-purple text-ph-bg font-semibold rounded-full shadow-md hover:scale-105 transition">Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Welcome Section -->
+  <div class="flex flex-col items-center justify-center min-h-screen px-6 pt-24 relative z-10 text-center">
+    <div class="glass p-10 rounded-3xl w-[90%] max-w-lg animate-float">
+      <!-- Logo -->
+      <div class="flex justify-center mb-4">
+        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-ph-accent to-ph-purple flex items-center justify-center animate-glowPulse">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2 L16 6 L12 10 L8 6 Z" />
+            <circle cx="12" cy="14" r="4" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="text-4xl font-extrabold mb-2 text-white">
+        Welcome to <span class="text-ph-accent">Play Hive</span>
+      </h1>
+      <p class="text-gray-400 text-sm sm:text-base mb-6">
+        Enter the hive of creativity — play, connect, and shine in style 🌌✨
+      </p>
+
+      <!-- Lottie Animation -->
+      <div class="w-44 h-44 mx-auto mb-6">
+        <lottie-player 
+          src="https://assets9.lottiefiles.com/packages/lf20_jtbfg2nb.json"
+          background="transparent"
+          speed="1"
+          loop
+          autoplay>
+        </lottie-player>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="register.html" class="px-6 py-3 rounded-full bg-gradient-to-r from-ph-accent to-ph-purple text-ph-bg font-semibold shadow-lg hover:scale-105 transition-all duration-300">
+          🌠 Join the Hive
+        </a>
+        <a href="login.html" class="px-6 py-3 rounded-full border border-ph-accent text-ph-accent font-semibold hover:bg-ph-accent/20 transition-all duration-300">
+          🔑 Login
+        </a>
+      </div>
+    </div>
+
+    <!-- Extra spacing below -->
+    <div class="mt-10 animate-float"></div>
+  </div>
+</body>
+</html>

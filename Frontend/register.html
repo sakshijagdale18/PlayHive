@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Play Hive — Register</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.1/lottie.min.js"></script>
+
+  <style>
+    :root {
+      --neon1: #a04bff;
+      --neon2: #49c7ff;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, #0a0024, #020010 70%);
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(#bfe7ff 1px, transparent 1px),
+        radial-gradient(#ffd6ff 1px, transparent 1px);
+      background-size: 220px 220px, 140px 140px, 80px 80px;
+      opacity: 0.5;
+      filter: blur(0.3px);
+      animation: twink 25s linear infinite;
+    }
+
+    @keyframes twink {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+    }
+
+    .nebula {
+      position: fixed;
+      right: -10%;
+      top: -10%;
+      width: 1100px;
+      height: 1100px;
+      background-image: url('https://images.unsplash.com/photo-1523983303491-64c2f0ce8b1e?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: blur(45px) saturate(120%);
+      opacity: 0.35;
+      mix-blend-mode: screen;
+      transform: rotate(15deg);
+    }
+
+    .lottie-bg {
+      position: fixed;
+      width: 250px;
+      height: 250px;
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    .card {
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(90deg, rgba(160,90,255,0.95), rgba(70,180,255,0.95));
+      box-shadow: 0 18px 60px rgba(20,10,40,0.6);
+    }
+
+    .card-inner {
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(2,6,23,0.85), rgba(6,3,20,0.75));
+      padding: 28px;
+      backdrop-filter: blur(10px) saturate(160%);
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: .72rem .95rem;
+      width: 100%;
+      transition: all .16s ease;
+      color: white;
+    }
+
+    .glass:focus {
+      outline: none;
+      border-color: rgba(160,90,255,0.5);
+      box-shadow: 0 0 20px rgba(160,90,255,0.2);
+    }
+
+    .glass::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .neon-btn {
+      background: linear-gradient(90deg, rgba(160,90,255,1), rgba(70,180,255,1));
+      color: #031022;
+      font-weight: 700;
+      padding: .78rem 1.1rem;
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 18px 60px rgba(65, 90, 160, 0.18);
+      transition: transform .14s ease, box-shadow .14s ease;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .neon-btn:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 26px 80px rgba(65,90,160,0.24);
+    }
+
+    .neon-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hint { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+
+    .error { color: #ff6b6b; font-size: 0.85rem; margin-top: 0.25rem; }
+    .success { color: #51cf66; font-size: 0.85rem; }
+
+    .input-error {
+      border-color: #ff6b6b !important;
+      box-shadow: 0 0 10px rgba(255,107,107,0.3) !important;
+    }
+
+    @media(max-width:920px) { .nebula { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="nebula"></div>
+
+  <!-- Lottie floating backgrounds -->
+  <div id="lottie1" class="lottie-bg" style="left:5%; top:10%;"></div>
+  <div id="lottie2" class="lottie-bg" style="right:10%; bottom:15%;"></div>
+  <div id="lottie3" class="lottie-bg" style="left:45%; top:70%; width:300px;"></div>
+
+  <!-- Registration container -->
+  <div class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
+    <div class="w-full max-w-4xl card">
+      <div class="card-inner grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Left Visual -->
+        <div class="flex flex-col items-center justify-center text-center">
+          <h1 class="text-3xl font-bold mb-3">Join Play Hive</h1>
+          <p class="hint mb-6">Create your gamer identity and enter the hive of champions 🕹️</p>
+          <div id="heroLottie" class="w-72 h-72"></div>
+        </div>
+
+        <!-- Right Form -->
+        <div>
+          <h2 class="text-2xl font-extrabold mb-2">Register</h2>
+          <p class="hint mb-6">Become part of the Play Hive gaming world</p>
+
+          <form id="registerForm" class="space-y-4" novalidate>
+            <div>
+              <label class="text-sm hint block mb-1">Username</label>
+              <input id="username" class="glass" type="text" placeholder="gamer_hero99" required minlength="3" maxlength="50">
+              <div id="usernameError" class="error hidden"></div>
+            </div>
+
+            <div>
+              <label class="text-sm hint block mb-1">Email</label>
+              <input id="email" class="glass" type="email" placeholder="you@playhive.gg" required>
+              <div id="emailError" class="error hidden"></div>
+            </div>
+
+            <div>
+              <label class="text-sm hint block mb-1">Password</label>
+              <input id="password" class="glass" type="password" placeholder="••••••••" required minlength="6">
+              <div id="passwordError" class="error hidden"></div>
+            </div>
+
+            <div>
+              <label class="text-sm hint block mb-1">Confirm Password</label>
+              <input id="confirmPassword" class="glass" type="password" placeholder="••••••••" required>
+              <div id="confirmPasswordError" class="error hidden">Passwords do not match.</div>
+            </div>
+
+            <button type="submit" id="registerBtn" class="neon-btn">
+              <span id="btnText">Create Account</span>
+              <span id="btnSpinner" class="hidden">⏳ Creating...</span>
+            </button>
+            
+            <div id="statusMsg" class="text-sm mt-2"></div>
+
+            <p class="hint text-sm mt-3">Already a player? 
+              <a href="login.html" class="underline hover:text-white transition-colors">Sign in here</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lotties background
+    lottie.loadAnimation({
+      container: document.getElementById('lottie1'),
+      renderer: 'svg', loop: true, autoplay: true,
+      path: 'https://assets2.lottiefiles.com/packages/lf20_puciaact.json'
+    });
+    lottie.loadAnimation({
+      container: document.getElementById('lottie2'),
+      renderer: 'svg', loop: true, autoplay: true,
+      path: 'https://assets2.lottiefiles.com/packages/lf20_oGlWy5.json'
+    });
+    lottie.loadAnimation({
+      container: document.getElementById('lottie3'),
+      renderer: 'svg', loop: true, autoplay: true,
+      path: 'https://assets10.lottiefiles.com/packages/lf20_Cc8Bpg.json'
+    });
+    lottie.loadAnimation({
+      container: document.getElementById('heroLottie'),
+      renderer: 'svg', loop: true, autoplay: true,
+      path: 'https://assets8.lottiefiles.com/packages/lf20_w51pcehl.json'
+    });
+
+    // ✅ Fixed Registration Script
+    const form = document.getElementById('registerForm');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const pass = document.getElementById('password');
+    const confirmPass = document.getElementById('confirmPassword');
+    const msg = document.getElementById('statusMsg');
+    const btn = document.getElementById('registerBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    // Error elements
+    const usernameError = document.getElementById('usernameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+    // Real-time validation
+    confirmPass.addEventListener('input', validatePasswords);
+    pass.addEventListener('input', validatePasswords);
+
+    function validatePasswords() {
+      if (pass.value && confirmPass.value && pass.value !== confirmPass.value) {
+        confirmPasswordError.classList.remove('hidden');
+        confirmPass.classList.add('input-error');
+        return false;
+      } else {
+        confirmPasswordError.classList.add('hidden');
+        confirmPass.classList.remove('input-error');
+        return true;
+      }
+    }
+
+    function clearErrors() {
+      usernameError.classList.add('hidden');
+      emailError.classList.add('hidden');
+      passwordError.classList.add('hidden');
+      confirmPasswordError.classList.add('hidden');
+      
+      username.classList.remove('input-error');
+      email.classList.remove('input-error');
+      pass.classList.remove('input-error');
+      confirmPass.classList.remove('input-error');
+    }
+
+    function showError(field, message) {
+      field.classList.add('input-error');
+      const errorElement = document.getElementById(field.id + 'Error');
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      }
+    }
+
+    function setLoading(state) {
+      btn.disabled = state;
+      if (state) {
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+      } else {
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+      }
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      clearErrors();
+      
+      // Client-side validation
+      if (!username.value.trim() || username.value.length < 3) {
+        showError(username, 'Username must be at least 3 characters');
+        return;
+      }
+
+      if (!email.value.trim() || !email.value.includes('@')) {
+        showError(email, 'Please enter a valid email address');
+        return;
+      }
+
+      if (!pass.value || pass.value.length < 6) {
+        showError(pass, 'Password must be at least 6 characters');
+        return;
+      }
+
+      if (!validatePasswords()) {
+        return;
+      }
+
+      setLoading(true);
+      msg.innerHTML = '<span class="hint">Creating your account...</span>';
+
+      try {
+        // ✅ FIXED: Use JSON format instead of URLSearchParams
+        const requestData = {
+          username: username.value.trim(),
+          email: email.value.trim(),
+          password: pass.value
+        };
+
+        console.log('Sending registration request:', requestData);
+
+        const res = await fetch('http://localhost:8088/api/users/register', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        console.log('Response status:', res.status);
+
+        // ✅ FIXED: Handle both text and JSON responses
+        const contentType = res.headers.get('content-type');
+        let result;
+        
+        if (contentType && contentType.includes('application/json')) {
+          result = await res.json();
+        } else {
+          const textResult = await res.text();
+          try {
+            result = JSON.parse(textResult);
+          } catch {
+            result = { message: textResult };
+          }
+        }
+
+        console.log('Registration result:', result);
+
+        if (res.ok && result.message === 'success') {
+          msg.innerHTML = '<span class="success">✅ Registration successful! Redirecting to login...</span>';
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+        } else {
+          let errorMessage = 'Registration failed';
+          
+          if (result.message === 'exists') {
+            errorMessage = 'Email already exists. Please use a different email.';
+            showError(email, 'Email already registered');
+          } else if (result.error) {
+            errorMessage = result.error;
+          } else if (result.message) {
+            errorMessage = result.message;
+          }
+          
+          msg.innerHTML = `<span class="error">⚠️ ${errorMessage}</span>`;
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        msg.innerHTML = '<span class="error">⚠️ Cannot connect to server. Please try again later.</span>';
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Add input event listeners to clear errors when user types
+    [username, email, pass, confirmPass].forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('input-error');
+        const errorElement = document.getElementById(input.id + 'Error');
+        if (errorElement) {
+          errorElement.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play Hive | Game Rules & Play</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            phPink: "#ffb6d9",
+            phPurple: "#a88bff",
+            phMint: "#a9f0d1",
+            phBlue: "#9dc7ff",
+            phDarkPink: "#ff6fb7",
+          },
+          animation: {
+            floaty: "floaty 6s ease-in-out infinite",
+            fadeIn: "fadeIn 1s ease-in-out",
+          },
+          keyframes: {
+            floaty: {
+              "0%,100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(-10px)" },
+            },
+            fadeIn: {
+              "0%": { opacity: "0" },
+              "100%": { opacity: "1" },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffe8f7, #f3e8ff);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.4s ease;
+    }
+
+    .glass:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .floating-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.7;
+      animation: floaty 10s ease-in-out infinite alternate;
+    }
+
+    .orb1 {
+      width: 400px;
+      height: 400px;
+      background: #ffd0f5;
+      top: -80px;
+      left: -120px;
+    }
+
+    .orb2 {
+      width: 500px;
+      height: 500px;
+      background: #e3d4ff;
+      bottom: -120px;
+      right: -150px;
+      animation-delay: 3s;
+    }
+  </style>
+</head>
+
+<body class="relative">
+  <!-- Background orbs -->
+  <div class="floating-orb orb1"></div>
+  <div class="floating-orb orb2"></div>
+
+  <!-- Navbar -->
+  <nav class="glass fixed w-full top-0 left-0 z-50 shadow-sm flex items-center justify-between px-8 py-3">
+    <h1 class="text-xl font-bold text-phPurple">🎮 Play Hive</h1>
+    <div class="space-x-6">
+      <a href="index.html" class="hover:text-phDarkPink font-medium">Home</a>
+      <a href="games.html" class="hover:text-phDarkPink font-medium">Games</a>
+     
+    </div>
+  </nav>
+
+  <!-- Main Section -->
+  <section class="pt-24 pb-16 px-6 md:px-16 relative z-10">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12 animate-fadeIn">
+      🧩 Game Rules & Play
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
+
+     
+
+      <!-- 2. Emoji Decoder -->
+      <div class="glass rounded-3xl p-6 animate-floaty">
+        <div class="flex flex-col md:flex-row items-center gap-5">
+          <img src="media/images.png" class="w-32 h-32 rounded-2xl object-cover shadow-md" alt="Emoji Decoder Game">
+          <div>
+            <h3 class="text-2xl font-bold text-teal-500">Emoji Decoder</h3>
+            <p class="text-gray-600 mt-2">Crack emoji-based puzzles! Decode emotions and hidden messages faster than your friends.</p>
+            <div class="mt-4 flex gap-3">
+              <a href="emojiedecoderrulebook.html" class="px-4 py-2 rounded-lg bg-teal-500 text-white font-medium hover:brightness-110">📜 Read Rule Book</a>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+
+      <!-- 4. Mind Loop -->
+      <div class="glass rounded-3xl p-6 animate-floaty">
+        <div class="flex flex-col md:flex-row items-center gap-5">
+          <img src="media/mindloop.jpeg" class="w-32 h-32 rounded-2xl object-cover shadow-md" alt="Mind Loop Game">
+          <div>
+            <h3 class="text-2xl font-bold text-pink-500">Mind Loop 🧠</h3>
+            <p class="text-gray-600 mt-2">Challenge your logic and focus in a hypnotic, memory-bending experience. How long can you loop?</p>
+            <div class="mt-4 flex gap-3">
+              <a href="mindlooprulebook.html" class="px-4 py-2 rounded-lg bg-pink-500 text-white font-medium hover:brightness-110">📜 Read Rule Book</a>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+       <!-- 1. Shape Shifter -->
+      <div class="glass rounded-3xl p-6 animate-floaty">
+        <div class="flex flex-col md:flex-row items-center gap-5">
+          <img src="media/image3.png" class="w-32 h-32 rounded-2xl object-cover shadow-md" alt="Shape Shifter Game">
+          <div>
+            <h3 class="text-2xl font-bold text-green-600">Shape Shifter</h3>
+            <p class="text-gray-600 mt-2">Unleash your inner artist! Match and morph shapes to create patterns under time pressure.</p>
+            <div class="mt-4 flex gap-3">
+              <a href="shapeshifterrulebook.html" class="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:brightness-110">📜 Read Rule Book</a>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Play Hive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #2b0000, #0a0000 80%);
+      color: white;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.25);
+    }
+    .chat-bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+      animation: fadeIn 0.6s ease;
+    }
+    .chat-user { background: #ff7070cc; color: black; align-self: flex-end; }
+    .chat-admin { background: #444444bb; color: white; align-self: flex-start; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .glow-btn {
+      background: linear-gradient(90deg, #ff4c4c, #ff7b7b);
+      box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+      transition: all 0.3s ease;
+    }
+    .glow-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 100, 100, 0.9); }
+    #chatBox {
+      scrollbar-width: thin;
+      scrollbar-color: #ff7070 #2b0000;
+    }
+    #chatBox::-webkit-scrollbar { width: 6px; }
+    #chatBox::-webkit-scrollbar-thumb { background: #ff7070; border-radius: 10px; }
+    #chatBox::-webkit-scrollbar-track { background: #1a0000; }
+  </style>
+</head>
+<body class="relative">
+
+  <nav class="fixed top-0 left-0 w-full bg-black/40 backdrop-blur-md border-b border-red-900/40 z-30">
+    <div class="max-w-6xl mx-auto flex justify-between items-center px-8 py-4">
+      <h1 class="text-2xl font-extrabold text-[#ff7070] tracking-widest">PLAY HIVE</h1>
+      <ul class="flex space-x-6 text-gray-300">
+        <li><a href="index.html" class="hover:text-[#ff7070]">Home</a></li>
+        <li><a href="games.html" class="hover:text-[#ff7070]">Games</a></li>
+        <li><a href="contact.html" class="text-[#ff7070] font-semibold">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="pt-28 pb-20 px-6 sm:px-10 lg:px-24 relative z-10">
+    <div class="max-w-5xl mx-auto glass rounded-3xl p-8">
+      <h2 class="text-center text-3xl font-bold mb-8 text-[#ff7070] tracking-wide">💬 Get in Touch</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Contact Form -->
+        <div>
+          <h3 class="text-xl font-semibold mb-5">Send a Message</h3>
+          <form id="contactForm" class="space-y-4">
+            <input type="text" id="name" placeholder="Your Name" class="w-full p-2.5 rounded-md bg-black/40 border border-white/20 placeholder-gray-400 focus:ring-2 focus:ring-[#ff7070]" required>
+            <input type="email" id="email" placeholder="Your Email" class="w-full p-2.5 rounded-md bg-black/40 border border-white/20 placeholder-gray-400 focus:ring-2 focus:ring-[#ff7070]" required>
+            <textarea id="message" rows="3" placeholder="Type your message..." class="w-full p-2.5 rounded-md bg-black/40 border border-white/20 placeholder-gray-400 focus:ring-2 focus:ring-[#ff7070]" required></textarea>
+            <button type="submit" class="glow-btn w-full py-2.5 text-black font-semibold rounded-md">Send Message</button>
+          </form>
+          <p id="statusMsg" class="mt-2 text-sm text-[#ff7070]"></p>
+        </div>
+
+        <!-- Chat Panel -->
+        <div>
+          <h3 class="text-xl font-semibold mb-5">Your Conversation</h3>
+          <div id="chatBox" class="h-64 overflow-y-auto glass rounded-2xl p-4 flex flex-col"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center text-gray-400 text-sm py-6 border-t border-red-900/40 relative z-10">
+    © 2025 Play Hive. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById("contactForm");
+    const chatBox = document.getElementById("chatBox");
+    const statusMsg = document.getElementById("statusMsg");
+    const emailInput = document.getElementById("email");
+
+    // ✅ Load chat messages by email
+    async function loadChat(email) {
+      if (!email) return;
+      try {
+        console.log("Fetching messages for:", email);
+        const res = await fetch(`http://localhost:8080/api/contact/messages?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        console.log("Messages:", data);
+
+        chatBox.innerHTML = "";
+        if (data.length === 0) {
+          chatBox.innerHTML = `<p class="text-gray-400 text-sm italic">No messages yet. Start chatting!</p>`;
+          return;
+        }
+
+        data.forEach(msg => {
+          // user message
+          const userBubble = `<div class="chat-bubble chat-user">${msg.message}</div>`;
+          chatBox.innerHTML += userBubble;
+
+          // admin reply (if exists)
+          if (msg.adminReply) {
+            const adminBubble = `<div class="chat-bubble chat-admin">${msg.adminReply}</div>`;
+            chatBox.innerHTML += adminBubble;
+          }
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+      } catch (err) {
+        console.error("Error loading messages:", err);
+        statusMsg.textContent = "⚠️ Unable to load conversation.";
+      }
+    }
+
+    // ✅ Send new message
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!name || !email || !message) {
+        statusMsg.textContent = "⚠️ Please fill all fields.";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:8080/api/contact/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ name, email, message })
+        });
+
+        const text = await res.text();
+        if (res.ok && text === "saved") {
+          statusMsg.textContent = "✅ Message sent!";
+          form.reset();
+          await loadChat(email);
+        } else {
+          statusMsg.textContent = `⚠️ ${text}`;
+        }
+      } catch (err) {
+        statusMsg.textContent = `⚠️ Server error: ${err.message}`;
+      }
+    });
+
+    // ✅ When user finishes typing email, load old chats
+    emailInput.addEventListener("blur", () => {
+      const email = emailInput.value.trim();
+      if (email) loadChat(email);
+    });
+  </script>
+</body>
+</html>

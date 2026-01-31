@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Emoji Decoder — Play Hive</title>
+  <style>
+    :root {
+      --bg: #f6effa;
+      --card: #ffffff;
+      --accent: #b86bff;
+      --accent2: #e3aaff;
+      --muted: #6a5d7b;
+      --glass: rgba(0, 0, 0, 0.06);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+      color: #3c2f4f;
+      background: linear-gradient(180deg, #fdfbff 0%, #f6effa 60%);
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 8px rgba(184, 107, 255, 0.15);
+    }
+    nav .leftArea { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    nav h2 { margin: 0; font-size: 20px; color: var(--accent); }
+    nav .links { display: flex; align-items: center; gap: 22px; }
+    nav .links a { text-decoration: none; color: var(--muted); font-weight: 500; transition: color 0.2s ease; }
+    nav .links a:hover { color: var(--accent); }
+
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .gameArea, .leaderboard {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(138, 75, 255, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .logo {
+      width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #fff; box-shadow: 0 6px 18px rgba(184, 107, 255, 0.25);
+    }
+
+    main { display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
+
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--glass);
+      box-shadow: 0 4px 10px rgba(184, 107, 255, 0.08);
+    }
+
+    .puzzle { font-size: 44px; text-align: center; padding: 28px; border-radius: 10px; background: linear-gradient(180deg, rgba(184, 107, 255, 0.07), transparent); }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    button {
+      background: transparent; border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #3c2f4f; padding: 8px 12px; border-radius: 10px;
+      cursor: pointer; font-weight: 600; transition: all 0.2s ease;
+    }
+    button:hover { background: rgba(184, 107, 255, 0.1); }
+    button.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white; border: none; box-shadow: 0 0 12px rgba(184, 107, 255, 0.25);
+    }
+    .inputRow { display: flex; gap: 8px; margin-top: 12px; }
+    input.answer {
+      flex: 1; padding: 12px; border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: white; color: #3c2f4f; font-size: 16px;
+    }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .stats { display: flex; gap: 12px; margin-top: 8px; }
+    .stat {
+      background: rgba(184, 107, 255, 0.08);
+      padding: 10px; border-radius: 10px;
+      text-align: center; min-width: 80px; color: #3c2f4f;
+    }
+
+    .hint { margin-top: 12px; background: rgba(184, 107, 255, 0.07); padding: 10px; border-radius: 8px; color: var(--muted); }
+
+    .leaderboard h2 {
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    th {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    tr:hover { background: rgba(184,107,255,0.08); }
+
+    .popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: white;
+      color: #3c2f4f;
+      padding: 25px 35px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .popup.correct { border: 2px solid #4ade80; }
+    .popup.wrong { border: 2px solid #ef4444; }
+
+    .player-status {
+      background: rgba(184, 107, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .player-status.logged-in { border-left: 4px solid #4ade80; }
+    .player-status.guest { border-left: 4px solid #f59e0b; }
+
+    @media (max-width:1000px) {
+      .container { grid-template-columns: 1fr; }
+      .leaderboard { margin-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="leftArea"><h2>Play Hive</h2></div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="emojiedecoderrulebook.html">How It Works</a>
+      
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="container">
+      <!-- Game Area -->
+      <div class="gameArea">
+        <header>
+          <div class="logo">EH</div>
+          <div>
+            <h1>Emoji Decoder</h1>
+            <p class="lead">Decode the emojis and type your answer below.</p>
+          </div>
+        </header>
+
+        <main>
+          <section>
+            <div class="card">
+              <div id="puzzle" class="puzzle">🔍 Loading…</div>
+              <div class="controls">
+                <button id="prev">◀ Prev</button>
+                <button id="next">Next ▶</button>
+                <button id="shuffle">🔀 Shuffle</button>
+                <button id="hintBtn">💡 Hint</button>
+                <button id="showAnswer">🧾 Show</button>
+                <button id="saveScore" class="primary">💾 Save Score</button>
+              </div>
+              <div class="inputRow">
+                <input id="answer" class="answer" placeholder="Type your decoded sentence" autocomplete="off" />
+                <button id="check" class="primary">Check</button>
+              </div>
+              <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+                <div class="muted">Try to guess before revealing hints!</div>
+                <div id="message" class="muted"></div>
+              </div>
+            </div>
+          </section>
+
+          <aside>
+            <div class="card">
+              <h3>Stats</h3>
+              <div class="stats">
+                <div class="stat"><div>Score</div><div id="score">0</div></div>
+                <div class="stat"><div>Streak</div><div id="streak">0</div></div>
+                <div class="stat"><div>Solved</div><div id="solved">0</div></div>
+              </div>
+              <div class="hint" id="hintBox">Hint appears here when requested.</div>
+              
+              <!-- Player Status -->
+              <div class="player-status guest" id="playerStatus">
+                <div id="playerName" style="font-weight: bold; margin-bottom: 5px;">👤 Checking session...</div>
+                <div id="loginPrompt" style="font-size: 12px; color: var(--muted);">
+                  Loading...
+                </div>
+              </div>
+            </div>
+          </aside>
+        </main>
+      </div>
+
+      <!-- Leaderboard Area -->
+      <div class="leaderboard">
+        <h2>🏆 Emoji Decoder Leaderboard</h2>
+        <div style="text-align: center; margin-bottom: 15px;">
+          <button id="refreshLeaderboard" class="primary" style="padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Score</th>
+              <th>Date Played</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="popup" class="popup"></div>
+
+<script>
+    const PUZZLES = [
+      { emoji: '🐢🐇🏁', answers: ['slow and steady wins the race'], hint: 'Classic moral' },
+      { emoji: '🎯🏆', answers: ['goal achieved'], hint: 'Success phrase' },
+      { emoji: '🎂🎉🎁', answers: ['happy birthday'], hint: 'Celebration' },
+      { emoji: '🧠⚡', answers: ['brainstorm'], hint: 'Creative thinking' },
+      { emoji: '🐝🍯', answers: ['busy as a bee'], hint: 'A hardworking saying' },
+      { emoji: '🌧️🌈', answers: ['after rain comes sunshine'], hint: 'Weather saying' },
+      { emoji: '🐦🌱', answers: ['early bird catches the worm'], hint: 'Morning proverb' },
+      { emoji: '👀🗣️', answers: ['see no evil speak no evil'], hint: 'Three wise monkeys' },
+      { emoji: '❤️🏃', answers: ['love at first sight'], hint: 'Romantic phrase' },
+      { emoji: '🍎📚', answers: ['an apple a day keeps the doctor away'], hint: 'Health proverb' }
+    ];
+
+    PUZZLES.sort(() => Math.random() - 0.5);
+
+    let idx = 0, score = 0, streak = 0, solved = 0;
+    let totalQuestions = PUZZLES.length;
+    let correctAnswers = 0;
+    let gameStartTime = Date.now();
+    
+    const puzzleEl = document.getElementById('puzzle'),
+          answerEl = document.getElementById('answer'),
+          messageEl = document.getElementById('message'),
+          scoreEl = document.getElementById('score'),
+          streakEl = document.getElementById('streak'),
+          solvedEl = document.getElementById('solved'),
+          hintBox = document.getElementById('hintBox'),
+          popup = document.getElementById('popup'),
+          leaderboardTable = document.getElementById('leaderboard'),
+          playerStatus = document.getElementById('playerStatus'),
+          playerName = document.getElementById('playerName'),
+          loginPrompt = document.getElementById('loginPrompt');
+
+    // API Configuration
+    const API_BASE = 'http://localhost:8088/api';
+    const EMOJI_API = `${API_BASE}/emoji`;
+
+    function normalize(s){return s.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim();}
+    
+    function render(){
+        const p = PUZZLES[idx];
+        puzzleEl.textContent = p.emoji;
+        answerEl.value = '';
+        hintBox.textContent = 'Hint appears here when requested.';
+        scoreEl.textContent = score;
+        streakEl.textContent = streak;
+        solvedEl.textContent = solved;
+    }
+
+    function showPopup(msg,type){
+        popup.textContent = msg;
+        popup.className = 'popup ' + type + ' show';
+        setTimeout(()=>popup.classList.remove('show'),3000);
+    }
+
+    function checkAnswer(){
+        const user = normalize(answerEl.value);
+        const p = PUZZLES[idx];
+        if(!user){messageEl.textContent='Type something!';return;}
+        const ok = p.answers.map(a=>normalize(a)).includes(user);
+        if(ok){
+            score+=10;streak++;solved++;correctAnswers++;
+            messageEl.textContent='🎉 Correct!';
+            showPopup('🎊 Correct Answer!', 'correct');
+        } else {
+            streak=0;score=Math.max(0,score-2);
+            messageEl.textContent='❌ Try again!';
+            showPopup('😕 Try Again!', 'wrong');
+        }
+        render();
+    }
+
+    // ===== EMAIL-BASED Session Management =====
+    class EmailSessionManager {
+        constructor() {
+            this.isLoggedIn = false;
+            this.username = null;
+            this.email = null;
+        }
+
+        checkLoginState() {
+            console.log('🔍 Checking login state...');
+            
+            const userData = localStorage.getItem('userData');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    console.log('✅ User found in localStorage:', user.email);
+                    
+                    this.isLoggedIn = true;
+                    this.username = user.username;
+                    this.email = user.email;
+                    
+                    this.updatePlayerDisplay('loggedin', `Logged in as ${user.username}`);
+                    return true;
+                    
+                } catch (e) {
+                    console.log('❌ Invalid user data in localStorage');
+                    this.clearSession();
+                    this.updatePlayerDisplay('guest', 'Invalid session data');
+                    return false;
+                }
+            } else {
+                console.log('🎮 No user session found (guest mode)');
+                this.isLoggedIn = false;
+                this.username = null;
+                this.email = null;
+                this.updatePlayerDisplay('guest', 'Play as Guest');
+                return false;
+            }
+        }
+
+        clearSession() {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('lastLogin');
+            this.isLoggedIn = false;
+            this.username = null;
+            this.email = null;
+        }
+
+        updatePlayerDisplay(status, message) {
+            if (!playerStatus || !playerName || !loginPrompt) {
+                console.log('❌ Player display elements not found');
+                return;
+            }
+
+            switch(status) {
+                case 'loggedin':
+                    playerName.textContent = `👤 ${this.username}`;
+                    loginPrompt.innerHTML = '<span style="color: #10b981;">✓ Logged in - Scores will be saved</span>';
+                    playerStatus.className = 'player-status logged-in';
+                    break;
+                case 'guest':
+                    playerName.textContent = '👤 Guest Player';
+                    loginPrompt.innerHTML = '<a href="login.html" style="color: var(--accent); text-decoration: none;">Login to save scores</a>';
+                    playerStatus.className = 'player-status guest';
+                    break;
+            }
+        }
+
+        getCurrentUserEmail() {
+            return this.email;
+        }
+
+        getCurrentUsername() {
+            return this.username;
+        }
+
+        isUserLoggedIn() {
+            return this.isLoggedIn;
+        }
+    }
+
+    // ===== EMAIL-BASED SCORE SAVING =====
+    async function saveScoreToBackend() {
+        console.log('💾 Attempting to save score...');
+        
+        if (!window.emailSessionManager.isUserLoggedIn()) {
+            console.log('❌ User not logged in - cannot save score');
+            showPopup('🔐 Please login to save scores', 'wrong');
+            return;
+        }
+
+        const userEmail = window.emailSessionManager.getCurrentUserEmail();
+        if (!userEmail) {
+            console.log('❌ No user email found');
+            showPopup('🔐 Please login again', 'wrong');
+            return;
+        }
+
+        // Calculate game stats
+        const timeTaken = Math.floor((Date.now() - gameStartTime) / 1000);
+        const level = Math.floor(score / 50) + 1;
+        
+        const scoreData = {
+            email: userEmail,
+            score: score,
+            level: level,
+            timeTaken: timeTaken,
+            correctAnswers: correctAnswers,
+            totalQuestions: totalQuestions
+        };
+
+        console.log('📤 Saving score with email:', userEmail, scoreData);
+
+        try {
+            // Use the SIMPLE endpoint to avoid null field issues
+            const response = await fetch(`${EMOJI_API}/submit-score-by-email-simple`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(scoreData)
+            });
+
+            console.log('📡 Save score response status:', response.status);
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Score saved successfully:', result);
+                showPopup('🎉 Score saved to leaderboard!', 'correct');
+                
+                // Refresh leaderboard
+                setTimeout(() => {
+                    updateLeaderboard();
+                }, 1000);
+                
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Failed to save score:', errorText);
+                try {
+                    const errorData = JSON.parse(errorText);
+                    showPopup('❌ Failed to save score: ' + (errorData.error || 'Unknown error'), 'wrong');
+                } catch {
+                    showPopup('❌ Failed to save score. Please try again.', 'wrong');
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Network error saving score:', error);
+            showPopup('❌ Network error. Please check connection.', 'wrong');
+        }
+    }
+
+    // ===== LEADERBOARD =====
+    async function updateLeaderboard() {
+        try {
+            console.log('🔄 Fetching leaderboard...');
+            const response = await fetch(`${EMOJI_API}/leaderboard`);
+            
+            console.log('📡 Leaderboard response status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('✅ Leaderboard data received');
+
+            renderLeaderboard(data);
+            
+        } catch (error) {
+            console.error('❌ Error fetching leaderboard:', error);
+            renderLeaderboardError();
+        }
+    }
+
+    function renderLeaderboard(data) {
+        if (!leaderboardTable) {
+            console.log('❌ Leaderboard table not found');
+            return;
+        }
+        
+        leaderboardTable.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            leaderboardTable.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--muted); padding: 20px;">
+                        No scores yet. Be the first to play!
+                    </td>
+                </tr>`;
+            return;
+        }
+        
+        data.slice(0, 10).forEach((item, index) => {
+            const row = document.createElement('tr');
+            const username = item.username || (item.user ? item.user.username : 'Unknown');
+            const scoreValue = item.score || 0;
+            const playedAt = item.playedAt ? new Date(item.playedAt) : new Date();
+            
+            // Highlight current user's score
+            const currentUserEmail = window.emailSessionManager.getCurrentUserEmail();
+            if (currentUserEmail && item.userEmail === currentUserEmail) {
+                row.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                row.style.fontWeight = 'bold';
+            }
+            
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${username}</td>
+                <td>${scoreValue}</td>
+                <td>${playedAt.toLocaleDateString()}</td>
+            `;
+            leaderboardTable.appendChild(row);
+        });
+    }
+
+    function renderLeaderboardError() {
+        if (leaderboardTable) {
+            leaderboardTable.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #ef4444; padding: 20px;">
+                        Error loading leaderboard. Please try again.
+                    </td>
+                </tr>`;
+        }
+    }
+
+    // ===== GAME MANAGEMENT =====
+    function resetGame() {
+        score = 0;
+        streak = 0;
+        solved = 0;
+        correctAnswers = 0;
+        gameStartTime = Date.now();
+        PUZZLES.sort(() => Math.random() - 0.5);
+        idx = 0;
+        render();
+        showPopup('🔄 Game reset!', 'correct');
+    }
+
+    function showUserScores() {
+        if (!window.emailSessionManager.isUserLoggedIn()) {
+            showPopup('🔐 Please login to view your scores', 'wrong');
+            return;
+        }
+        
+        const userEmail = window.emailSessionManager.getCurrentUserEmail();
+        fetchUserScoresByEmail(userEmail);
+    }
+
+    async function fetchUserScoresByEmail(email) {
+        try {
+            const response = await fetch(`${EMOJI_API}/scores-by-email?email=${encodeURIComponent(email)}`);
+            
+            if (response.ok) {
+                const scores = await response.json();
+                console.log('📊 User scores:', scores);
+                displayUserScores(scores);
+            } else {
+                showPopup('❌ Failed to load scores', 'wrong');
+            }
+        } catch (error) {
+            console.error('❌ Error fetching user scores:', error);
+            showPopup('❌ Network error loading scores', 'wrong');
+        }
+    }
+
+    function displayUserScores(scores) {
+        if (scores.length === 0) {
+            alert('No saved scores found. Play some games first!');
+            return;
+        }
+        
+        const scoreList = scores.map(score => 
+            `Score: ${score.score} | Level: ${score.level} | Time: ${score.timeTaken}s | Correct: ${score.correctAnswers}/${score.totalQuestions}`
+        ).join('\n');
+        
+        alert(`Your Recent Scores:\n\n${scoreList}`);
+    }
+
+    async function debugSessionState() {
+        console.log('🔍 Current Session State:');
+        console.log('  - localStorage userData:', localStorage.getItem('userData'));
+        console.log('  - Email Session Manager:', window.emailSessionManager);
+        console.log('  - Logged in:', window.emailSessionManager.isUserLoggedIn());
+        console.log('  - User email:', window.emailSessionManager.getCurrentUserEmail());
+        
+        // Test the simple endpoint
+        try {
+            const testResponse = await fetch(`${EMOJI_API}/debug`);
+            console.log('🔧 Debug endpoint status:', testResponse.status);
+        } catch (error) {
+            console.log('❌ Debug endpoint failed:', error);
+        }
+    }
+
+    // ===== INITIALIZATION =====
+    async function initializeGame() {
+        console.log('🎮 Initializing EmojiDecoder game...');
+        
+        render();
+        
+        // Initialize email session manager
+        window.emailSessionManager = new EmailSessionManager();
+        window.emailSessionManager.checkLoginState();
+        
+        // Load leaderboard
+        await updateLeaderboard();
+
+        console.log('🎯 Game initialization complete');
+    }
+
+    // ===== EVENT LISTENERS =====
+    document.getElementById('next').onclick=()=>{idx=(idx+1)%PUZZLES.length;render();};
+    document.getElementById('prev').onclick=()=>{idx=(idx-1+PUZZLES.length)%PUZZLES.length;render();};
+    document.getElementById('shuffle').onclick=()=>{PUZZLES.sort(()=>Math.random()-0.5);idx=0;render();};
+    document.getElementById('hintBtn').onclick=()=>{hintBox.textContent=PUZZLES[idx].hint;};
+    document.getElementById('showAnswer').onclick=()=>alert('Answer(s): '+PUZZLES[idx].answers.join(', '));
+    document.getElementById('check').onclick=checkAnswer;
+    document.getElementById('saveScore').onclick=saveScoreToBackend;
+    document.getElementById('refreshLeaderboard').onclick=updateLeaderboard;
+    answerEl.addEventListener('keydown',e=>{if(e.key==='Enter')checkAnswer();});
+
+    // ===== CONTROL BUTTONS =====
+    function addControlButtons() {
+        const controlsDiv = document.createElement('div');
+        controlsDiv.style.cssText = 'position: fixed; bottom: 10px; left: 10px; z-index: 1000; display: flex; gap: 10px; flex-wrap: wrap;';
+        
+        // Login status button
+        const statusBtn = document.createElement('button');
+        statusBtn.textContent = '🔍 Check Login';
+        statusBtn.title = 'Check current login status';
+        statusBtn.style.cssText = 'background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer;';
+        statusBtn.onclick = () => {
+            window.emailSessionManager.checkLoginState();
+            showPopup('Login status checked', 'correct');
+        };
+        
+        // Reset game button
+        const resetBtn = document.createElement('button');
+        resetBtn.textContent = '🔄 Reset Game';
+        resetBtn.title = 'Reset current game progress';
+        resetBtn.style.cssText = 'background: #f59e0b; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer;';
+        resetBtn.onclick = resetGame;
+        
+        // My Scores button
+        const scoresBtn = document.createElement('button');
+        scoresBtn.textContent = '📊 My Scores';
+        scoresBtn.title = 'View your personal scores';
+        scoresBtn.style.cssText = 'background: #10b981; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer;';
+        scoresBtn.onclick = showUserScores;
+        
+        controlsDiv.appendChild(statusBtn);
+        controlsDiv.appendChild(resetBtn);
+        controlsDiv.appendChild(scoresBtn);
+        document.body.appendChild(controlsDiv);
+    }
+
+    // Debug button
+    const debugBtn = document.createElement('button');
+    debugBtn.textContent = '🐛 Debug Session';
+    debugBtn.title = 'Show session debugging information';
+    debugBtn.style.cssText = 'position: fixed; bottom: 10px; right: 10px; z-index: 1000; background: #8b5cf6; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer;';
+    debugBtn.onclick = debugSessionState;
+    document.body.appendChild(debugBtn);
+
+    // Add control buttons
+    addControlButtons();
+
+    // Initialize the game when DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    } else {
+        initializeGame();
+    }
+</script>
+
+</body>
+</html>

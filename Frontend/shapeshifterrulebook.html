@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shape Shifter Rule Book — Play Hive</title>
+
+  <style>
+    :root {
+      --bg: #f4f8f5;
+      --accent: #2e7d32; /* forest green */
+      --text: #1a1a1a;
+      --muted: #4a5b4f;
+      --card: #ffffff;
+      --border: rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, sans-serif;
+      background: linear-gradient(to bottom right, #e9f3ea, #f4f8f5);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 40px;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    nav .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Layout */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 50px;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 10%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Left section */
+    .intro {
+      animation: fadeIn 1.2s ease;
+    }
+
+    .intro h1 {
+      font-size: 42px;
+      line-height: 1.2;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .intro p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 16px;
+      margin-bottom: 35px;
+      max-width: 400px;
+    }
+
+    .intro .play-btn {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .intro .play-btn:hover {
+      background: #3b9440;
+      transform: scale(1.05);
+    }
+
+    /* Rules grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 22px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(46,125,50,0.15);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 40px 0 20px;
+      border-top: 1px solid var(--border);
+      background: #f9faf9;
+    }
+
+    @media(max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 60px 6%;
+      }
+      .intro h1 {
+        font-size: 34px;
+        text-align: center;
+      }
+      .intro p {
+        text-align: center;
+        margin: 0 auto 30px;
+      }
+      .intro .play-btn {
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">Play Hive</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="shapeshifterrulebook.html" class="active">How It Works</a></li>
+      
+    </ul>
+  </nav>
+
+  <!-- Main Layout -->
+  <div class="container">
+    <!-- Left -->
+    <div class="intro">
+      <h1>📘 Shape Shifter Rule Book</h1>
+      <p>Get ready to train your eyes and reflexes! In <strong>Shape Shifter</strong>, only the sharpest minds can spot the subtle differences between patterns. Can you find the odd one before time runs out?</p>
+      <a href="shapeshifter.html" class="play-btn">🎮 Play Now</a>
+    </div>
+
+    <!-- Right -->
+    <div class="rules-grid">
+      <div class="card">
+        <h2>🎯 Objective</h2>
+        <p>Spot the odd one out! Among identical shapes, one is slightly different — in color, size, or rotation.</p>
+      </div>
+      <div class="card">
+        <h2>🧩 How To Play</h2>
+        <ul>
+          <li>Observe the grid carefully.</li>
+          <li>Click or tap the shape that looks different.</li>
+          <li>Win points and move to faster levels!</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>🏆 Scoring System</h2>
+        <ul>
+          <li>+10 points for each correct shape</li>
+          <li>Bonus for quick reactions ⏱️</li>
+          <li>Miss clicks reduce your streak</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>⚙️ Controls</h2>
+        <ul>
+          <li>🖱️ Click — select shape</li>
+          <li>▶ Next Level — auto after correct answer</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>🌲 Tips & Tricks</h2>
+        <ul>
+          <li>Focus on corners and edges first.</li>
+          <li>Don’t blink! The game gets faster each round.</li>
+          <li>Stay calm — accuracy wins more points than speed.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>🚀 Levels</h2>
+        <p>Progress through increasingly complex patterns and colors.  
+        Each level sharpens your perception and memory.</p>
+      </div>
+    </div>
+  </div>
+
+  
+
+</body>
+</html>
